@@ -562,6 +562,11 @@ table.tb{width:100%;border-collapse:collapse;font-size:13.5px}
 .nv-status[data-st="erro"]{color:var(--red)}
 .nv-status[data-st="offline"]{color:var(--amber)}
 
+/* dias doente */
+.wk7d.doente{background:var(--blue-soft)}
+.doente-card{border-color:color-mix(in srgb,var(--blue) 30%,var(--border))}
+.tr-alert.doente-alert{background:var(--blue-soft);border-color:color-mix(in srgb,var(--blue) 28%,transparent)}
+
 </style>
 </head>
 <body>
@@ -723,6 +728,7 @@ function load(){
   S.config ||= {}; S.config.perguntas ||= seed().config.perguntas;
   S.habitos ||= []; S.logs ||= {}; S.tarefas ||= []; S.checkins ||= {};
   S.treino ||= treinoSeed(); S.alongamentos ||= []; S.dieta ||= dietaSeed(); S.dieta.dias ||= {};
+  S.doente ||= {};
   S.pomodoro ||= pomoSeed();
   S.pomodoro.cfg ||= {foco:30, pausa:5, rounds:1, som:'calmo', tag:''};
   S.pomodoro.tags ||= []; S.pomodoro.sessoes ||= [];
@@ -915,7 +921,7 @@ VIEWS.inicio = function(){
       <div class="card stat clk" data-go="habitos"><div class="k">Hábitos</div><div class="v">${dh}<small>de ${nh}</small></div></div>
       <div class="card stat clk" data-go="tarefas"><div class="k">Tarefas abertas</div><div class="v">${abertas.length}<small>${concHoje?concHoje+' feitas hoje':'a fazer'}</small></div></div>
       <div class="card stat clk" data-go="treino"><div class="k">${trA ? 'Treino em andamento' : trHoje ? 'Treino de hoje' : 'Próximo treino'}</div><div class="v" style="font-size:19px">${esc((trA ? S.treino.rotinas[trA.rotina] : trHoje ? S.treino.rotinas[trHoje.rotina] : trP).nome)}<small>${trA ? 'toque para voltar' : trHoje ? '✓ feito' : esc(horaTreino())}</small></div></div>
-      <div class="card stat clk" data-go="dieta"><div class="k">Alimentação</div>${(() => { const n = notaDia(t); return n == null ? '<div class="v faint">Registrar</div>' : `<div class="v ${n>=80?'green':n>=50?'amber':'red'}">${n}%<small>${isFDS(t)?'fim de semana':'no plano'}</small></div>`; })()}</div>
+      <div class="card stat clk" data-go="dieta"><div class="k">Alimentação</div>${(() => { const n = notaDia(t); return doenteEm(t) ? '<div class="v" style="font-size:19px">🤒 Doente<small>descanse e hidrate-se</small></div>' : n == null ? '<div class="v faint">Registrar</div>' : `<div class="v ${n>=80?'green':n>=50?'amber':'red'}">${n}%<small>${isFDS(t)?'fim de semana':'no plano'}</small></div>`; })()}</div>
     </div>
 
     <div class="grid g2" style="margin-top:14px">
@@ -1324,16 +1330,23 @@ function treinoPainel(){
   if (tend != null) tendTxt = tend > 0.5 ? `<span class="red">+${nf(tend,2)} kg/sem · rápido demais, reduza um pouco a comida</span>` : tend >= 0.2 ? `<span class="green">+${nf(tend,2)} kg/sem · no ritmo certo</span>` : tend >= 0 ? `<span class="amber">+${nf(tend,2)} kg/sem · abaixo da meta (+0,25 a 0,4)</span>` : `<span class="amber">${nf(tend,2)} kg/sem · perdendo peso</span>`;
   const seqChips = t.seq.map((id,i) => { const ro = t.rotinas[id]; const on = i === t.prox % n; const ad = t.adiantados.includes(id); return `<span class="seq-chip ${on?'on':''} ${ad?'ad':''}" title="${esc(ro.nome)}">${i+1}. ${esc(ro.nome)}${ad?' ✓':''}</span>`; }).join('');
   const exUsados = {}; t.sessoes.forEach(s => s.itens.forEach(it => { if (workSets(it).length) exUsados[it.ex] = (exUsados[it.ex]||0) + 1; }));
+  // dias doente: hoje marcado, ou voltando depois de ficar doente (até 10 dias, antes do 1º treino)
+  const udz = ultimoDiaDoente();
+  const dzAviso = doenteEm(hoje)
+    ? `<div class="tr-alert doente-alert">🤒 Hoje está marcado como <b>dia doente</b>. Descanse, a sequência espera por você.<div style="margin-top:8px"><button class="btn btn-ghost btn-sm" id="dzDesHoje">Desmarcar hoje</button></div></div>`
+    : udz && udz >= iso(addDays(now,-10)) && !t.sessoes.some(s => s.data > udz)
+    ? `<div class="tr-alert doente-alert">🤒 Você ficou <b>${diasSeguidosDoente(udz)} dia${diasSeguidosDoente(udz)===1?'':'s'} doente</b> (até ${fmtShort(udz)}). No primeiro treino de volta, vá mais leve: cerca de <b>80% da carga</b> e <b>1 série a menos</b> por exercício. Se a falta de ar, a tontura ou o enjoo voltarem, pare e descanse.</div>` : '';
 
   $('#main').innerHTML = `<div class="page">
     <div class="ph"><div><h1>Treino</h1><div class="sub">Ganho de massa · ${n} treinos em sequência · ${esc(horaTreino())}</div></div>
-      <div class="chips"><button class="btn btn-ghost" id="trAtiv">${svg('run')} Atividade</button><button class="btn btn-ghost" id="trPeso">${svg('scale')} Peso</button></div></div>
+      <div class="chips"><button class="btn btn-ghost" id="trAtiv">${svg('run')} Atividade</button><button class="btn btn-ghost" id="trPeso">${svg('scale')} Peso</button><button class="btn btn-ghost" id="trDoente" title="Marcar dias em que esteve doente">🤒 Doente</button></div></div>
 
     ${a ? `<div class="card pad tr-next live"><div class="tr-k">Treino em andamento</div><div class="tr-title">${esc(t.rotinas[a.rotina].nome)}</div><div class="muted" style="font-size:13px">Começou às ${new Date(a.inicio).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div><div style="margin-top:14px"><button class="btn btn-dark" id="trVoltar">${svg('play','fill="currentColor"')} Voltar ao treino</button></div></div>`
     : `<div class="card pad tr-next">
       <div class="tr-k">Próximo treino</div>
       <div class="tr-title">${esc(r.nome)}</div>
       <div class="muted" style="font-size:13px">${esc(r.sub)} · ${r.itens.length} exercícios · ${r.itens.reduce((s,i)=>s+i.series,0)} séries</div>
+      ${dzAviso}
       ${alternativa ? `<div class="tr-alert">${ATIV_TIPOS[impacto.tipo][1]} ${impacto.data === hoje ? 'Hoje' : 'Ontem'} teve ${ATIV_TIPOS[impacto.tipo][0].toLowerCase()}. Quer adiantar <b>${esc(alternativa.nome)}</b> e deixar a perna para depois?<div style="margin-top:8px"><button class="btn btn-dark btn-sm" data-start="${alternativa.id}">Fazer ${esc(alternativa.nome)}</button></div></div>` : ''}
       ${rotinaPerna(r) && ultPerna && ultPerna.joelho > 3 ? `<div class="tr-alert">Na última perna o joelho ficou em <b>${ultPerna.joelho}/10</b>. Vá com calma hoje e, se passar de 3, troque o exercício que incomodar.</div>` : ''}
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px"><button class="btn btn-dark" data-start="${r.id}">${svg('play','fill="currentColor"')} Começar treino</button><button class="btn btn-ghost" id="trOutro">Escolher outro</button></div>
@@ -1343,7 +1356,7 @@ function treinoPainel(){
     <div class="grid g2" style="margin-top:14px">
       <div class="card pad"><div class="tr-h"><b>Esta semana</b><span class="muted">${semTreinos.length} treino${semTreinos.length===1?'':'s'}${semAtiv.length ? ' · ' + semAtiv.length + ' atividade' + (semAtiv.length===1?'':'s') : ''}</span></div>
         <div class="wk7">${dias.map(d => { const tr = t.sessoes.filter(s => s.data === d), at = t.atividades.filter(x => x.data === d); const dd = parseISO(d);
-          return `<div class="wk7d ${d===hoje?'hoje':''}"><small>${DIA3[dd.getDay()]}</small><b>${dd.getDate()}</b><div class="wk7i">${tr.map(s => `<i class="tr" title="${esc(t.rotinas[s.rotina]?.nome||'')}"></i>`).join('')}${at.map(x => `<span title="${esc(ATIV_TIPOS[x.tipo][0])}">${ATIV_TIPOS[x.tipo][1]}</span>`).join('')}</div></div>`; }).join('')}</div></div>
+          return `<div class="wk7d ${d===hoje?'hoje':''} ${doenteEm(d)?'doente':''}"><small>${DIA3[dd.getDay()]}</small><b>${dd.getDate()}</b><div class="wk7i">${doenteEm(d) ? '<span title="Doente">🤒</span>' : ''}${tr.map(s => `<i class="tr" title="${esc(t.rotinas[s.rotina]?.nome||'')}"></i>`).join('')}${at.map(x => `<span title="${esc(ATIV_TIPOS[x.tipo][0])}">${ATIV_TIPOS[x.tipo][1]}</span>`).join('')}</div></div>`; }).join('')}</div></div>
       <div class="card pad"><div class="tr-h"><b>Peso</b><span class="muted">balança da academia, com tênis</span></div>
         ${pesos.length ? `<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><span style="font-size:30px;font-weight:800;letter-spacing:-1px">${nf(pesos[pesos.length-1].kg,1)} kg</span><span class="muted" style="font-size:12px">${fmtShort(pesos[pesos.length-1].data)}${m7!=null?' · média 7 dias '+nf(m7,1)+' kg':''}</span></div><div style="font-size:12.5px;margin-top:4px">${tendTxt || '<span class="muted">Registre por 2 semanas para ver a tendência.</span>'}</div>${pesos.length >= 2 ? `<div class="chart" style="margin-top:10px">${lineChart(pesos.map(p => ({x:p.data, y:p.kg})), {unit:'kg'})}</div>` : ''}`
         : `<div class="empty" style="padding:18px">Registre seu peso para acompanhar o ganho de massa.<br><span style="font-size:12px">Meta: +0,25 a 0,4 kg por semana.</span></div>`}
@@ -1369,6 +1382,8 @@ function treinoPainel(){
     b.querySelector('[data-x]').onclick = closeModal; b.querySelectorAll('[data-p]').forEach(p => p.onclick = () => { closeModal(); iniciarTreino(p.dataset.p); }); });
   $('#trAtiv').onclick = () => ativModal(null);
   $('#trPeso').onclick = pesoModal;
+  $('#trDoente').onclick = () => doenteModal(null);
+  if ($('#dzDesHoje')) $('#dzDesHoje').onclick = () => { delete DOE()[hoje]; save(); render(); toast('Hoje desmarcado'); };
   $$('[data-ativ]').forEach(el => el.onclick = () => ativModal(t.atividades.find(x => x.id === el.dataset.ativ)));
   $$('[data-sess]').forEach(el => el.onclick = () => sessaoModal(t.sessoes.find(x => x.id === el.dataset.sess)));
   $$('[data-edrot]').forEach(b => b.onclick = () => rotinaModal(b.dataset.edrot));
@@ -1790,6 +1805,41 @@ const ST = {
   sim:{t:'Segui', i:'✓', c:'y'}, meio:{t:'Mais ou menos', i:'~', c:'m'}, nao:{t:'Fugi', i:'✗', c:'n'},
   livre:{t:'Livre', i:'⭐', c:'l'}, na:{t:'Não treinei', i:'—', c:'x'}
 };
+/* ---------- dias doente (valem para alimentação e treino) ----------
+   S.doente = { 'AAAA-MM-DD': {nota} } · não contam no acerto da alimentação, aparecem com 🤒 no treino;
+   a sequência de treinos não anda (continua de onde parou) */
+const DOE = () => (S.doente ||= {});
+const doenteEm = dia => !!DOE()[dia];
+function ultimoDiaDoente(){ const ks = Object.keys(DOE()).filter(d => d <= todayISO()).sort(); return ks.length ? ks[ks.length-1] : null; }
+function diasSeguidosDoente(fim){ let n = 0, d = parseISO(fim); while (doenteEm(iso(d)) && n < 60) { n++; d = addDays(d,-1); } return n; }
+function doenteModal(diaSug){
+  const hoje = todayISO();
+  let ini = diaSug, fim = diaSug || hoje;
+  if (!ini) {   // sugestão: do dia seguinte ao último registro (treino ou alimentação) até hoje
+    const regs = [...S.treino.sessoes.map(s => s.data), ...Object.keys(S.dieta.dias).filter(d => notaDia(d) != null)].filter(d => d < hoje && !doenteEm(d)).sort();
+    ini = regs.length ? iso(addDays(parseISO(regs[regs.length-1]),1)) : hoje;
+    const lim = iso(addDays(new Date(),-14)); if (ini < lim) ini = lim; if (ini > hoje) ini = hoje;
+  }
+  const marcados = Object.keys(DOE()).sort().reverse().slice(0,10);
+  openModal(`<h3>🤒 Dias doente</h3>
+    <p class="muted" style="font-size:13px;line-height:1.6;margin-bottom:14px">Os dias marcados não contam no acerto da alimentação e aparecem com 🤒 no treino. A sequência de treinos continua de onde parou.</p>
+    <div class="row2"><div class="field"><label>De</label><input type="date" id="dzIni" value="${ini}" max="${hoje}"></div><div class="field"><label>Até</label><input type="date" id="dzFim" value="${fim}" max="${hoje}"></div></div>
+    <div class="field"><label>O que teve (opcional)</label><textarea id="dzNota" rows="2" placeholder="Ex.: diarreia, vômito, febre...">${esc((DOE()[fim] || DOE()[ini] || {}).nota || '')}</textarea></div>
+    ${marcados.length ? `<div class="sec-label" style="margin-top:14px">Já marcados</div><div class="sess-b">${marcados.map(d => `<div class="ln"><span>🤒 ${fmtShort(d)}${DOE()[d].nota ? ' · <span class="muted">' + esc(DOE()[d].nota) + '</span>' : ''}</span><span><button class="icon-btn" data-dzdel="${d}" title="Desmarcar" style="width:22px;height:22px;display:inline-grid;vertical-align:middle;background:none">${svg('x')}</button></span></div>`).join('')}</div>` : ''}
+    <div class="foot"><button class="btn btn-ghost" data-x>Cancelar</button><button class="btn btn-dark" id="dzOk">Marcar</button></div>`, b => {
+    b.querySelector('[data-x]').onclick = closeModal;
+    b.querySelector('#dzOk').onclick = () => {
+      let a = b.querySelector('#dzIni').value, z = b.querySelector('#dzFim').value || a;
+      if (!a) return toast('Escolha o dia');
+      if (z < a) [a, z] = [z, a];
+      if (z > hoje) z = hoje;
+      const nota = b.querySelector('#dzNota').value.trim(); let n = 0;
+      for (let d = parseISO(a); iso(d) <= z && n < 60; d = addDays(d,1)) { DOE()[iso(d)] = {nota}; n++; }
+      save(); closeModal(); render(); toast(n === 1 ? 'Dia marcado como doente' : `${n} dias marcados como doente`);
+    };
+    b.querySelectorAll('[data-dzdel]').forEach(x => x.onclick = () => { delete DOE()[x.dataset.dzdel]; save(); doenteModal(diaSug); render(); });
+  });
+}
 function diaDieta(dia){ return (D().dias[dia] ||= {ref:{}, prot:null, livres:0, nota:''}); }
 function livresNoDia(dia){
   const d = D().dias[dia]; if (!d) return 0;
@@ -1800,7 +1850,7 @@ function resumoSemana(ini){
   const dias = [...Array(7)].map((_,i) => iso(addDays(ini,i))), hoje = todayISO();
   let pts = 0, tot = 0, livres = 0;
   dias.forEach(dia => {
-    if (dia > hoje) return; const d = D().dias[dia]; if (!d) return;
+    if (dia > hoje || doenteEm(dia)) return; const d = D().dias[dia]; if (!d) return;
     if (isFDS(dia)) { if (d.prot != null) { tot++; pts += d.prot === true ? 1 : d.prot === 'meio' ? .5 : 0; } livres += +d.livres || 0; return; }
     Object.values(d.ref || {}).forEach(v => {
       if (v === 'na') return;
@@ -1812,7 +1862,7 @@ function resumoSemana(ini){
   return {dias, pct: tot ? Math.round(pts/tot*100) : null, livres, tot};
 }
 function notaDia(dia){
-  const d = D().dias[dia]; if (!d) return null;
+  const d = D().dias[dia]; if (!d || doenteEm(dia)) return null;
   if (isFDS(dia)) return d.prot == null && !d.livres ? null : (d.prot === true ? 100 : d.prot === 'meio' ? 60 : d.prot === false ? 20 : 70);
   const vs = Object.values(d.ref || {}).filter(v => v !== 'na'); if (!vs.length) return null;
   return Math.round(vs.reduce((s,v) => s + (v === 'sim' || v === 'livre' ? 1 : v === 'meio' ? .5 : 0), 0) / vs.length * 100);
@@ -1834,9 +1884,17 @@ VIEWS.dieta = function(){
   else if (pt.tend < 0.2) ajuste = `<b class="amber">Peso subindo pouco (${pt.tend >= 0 ? '+' : ''}${nf(pt.tend,2)} kg/sem).</b> Coma um pouco mais: +1 pão francês no café ou +30 g de aveia no shake.`;
   else if (pt.tend > 0.5) ajuste = `<b class="red">Peso subindo rápido (+${nf(pt.tend,2)} kg/sem).</b> Tire uma porção: 1 pão a menos no café ou menos arroz no jantar.`;
   else ajuste = `<b class="green">No ritmo certo (+${nf(pt.tend,2)} kg/sem).</b> Mantenha como está.`;
+  const udz = ultimoDiaDoente();
+  if (udz && udz >= iso(addDays(new Date(),-14)) && pt.tend != null) ajuste = `<span class="muted">🤒 Você ficou doente em ${fmtShort(udz)}: o peso destas semanas cai por causa disso, não da comida. Espere uns 10 dias depois de melhorar antes de mexer no plano.</span>`;
   const opcoes = r => ['sim','meio','nao','livre', ...(r.treino ? ['na'] : [])];
+  const dz = doenteEm(dia);
 
-  const hojeHTML = fds ? `
+  const hojeHTML = dz ? `
+    <div class="card pad doente-card"><div class="tr-h"><b>🤒 Dia doente</b><button class="btn btn-ghost btn-sm" id="dzDes">Desmarcar</button></div>
+      <p class="muted" style="font-size:13px;line-height:1.6">Este dia não conta no acerto da semana. Agora o que importa é beber bastante líquido (água, soro) e comer o que o estômago aceitar. O plano volta quando você melhorar.</p>
+      ${DOE()[dia].nota ? `<p style="font-size:13px;margin-top:8px"><b>O que teve:</b> ${esc(DOE()[dia].nota)}</p>` : ''}
+    </div>`
+  : fds ? `
     <div class="card pad"><div class="tr-h"><b>Fim de semana</b><span class="muted">sem dieta quadrada</span></div>
       <p class="muted" style="font-size:13px;line-height:1.6;margin-bottom:14px">Só duas coisas importam hoje: proteína nas refeições principais e quantas refeições livres você fez.</p>
       <div class="ci-q" style="padding:0;margin-bottom:14px"><div class="qt">Comeu proteína nas refeições principais?</div>
@@ -1854,7 +1912,7 @@ VIEWS.dieta = function(){
 
   $('#main').innerHTML = `<div class="page narrow">
     <div class="ph"><div><h1>Alimentação</h1><div class="sub">Ganho de massa · referência ~${nf(m.kcal)} kcal · sem contar caloria</div></div>
-      <div class="seg"><button class="${dietaAba==='hoje'?'on':''}" data-ab="hoje">Registro</button><button class="${dietaAba==='plano'?'on':''}" data-ab="plano">Plano</button></div></div>
+      <div class="chips"><button class="btn btn-ghost" id="dzBtn" title="Marcar dias em que esteve doente">🤒 Doente</button><div class="seg"><button class="${dietaAba==='hoje'?'on':''}" data-ab="hoje">Registro</button><button class="${dietaAba==='plano'?'on':''}" data-ab="plano">Plano</button></div></div></div>
     ${dietaAba === 'hoje' ? `
     <div class="card mbar" style="margin-bottom:12px"><div class="mnav"><button class="icon-btn" id="dPrev" aria-label="Dia anterior">${svg('left')}</button><div class="mname" style="font-size:16px;min-width:200px">${dia === hoje ? 'Hoje · ' : ''}${fmtLong(dia)}</div><button class="icon-btn" id="dNext" ${dia >= hoje ? 'disabled style="opacity:.3"' : ''} aria-label="Próximo dia">${svg('right')}</button></div></div>
     ${hojeHTML}
@@ -1867,13 +1925,15 @@ VIEWS.dieta = function(){
         <div class="card stat" style="box-shadow:none"><div class="k">Refeições livres</div><div class="v ${sem.livres > D().livresSemana ? 'red' : ''}">${sem.livres}<small>de ${D().livresSemana}</small></div></div>
       </div>
       <div class="wk7">${sem.dias.map(x => { const n = notaDia(x), xd = parseISO(x), lv = livresNoDia(x);
-        return `<div class="wk7d ${x===dia?'hoje':''}" data-dia="${x}" style="cursor:${x<=hoje?'pointer':'default'}"><small>${DIA3[xd.getDay()]}</small><b>${xd.getDate()}</b><div class="wk7i">${n == null ? '' : `<i class="dn ${n>=80?'g':n>=50?'a':'r'}"></i>`}${lv ? '<span>⭐</span>'.repeat(Math.min(lv,2)) : ''}</div></div>`; }).join('')}</div>
+        return `<div class="wk7d ${x===dia?'hoje':''} ${doenteEm(x)?'doente':''}" data-dia="${x}" style="cursor:${x<=hoje?'pointer':'default'}"><small>${DIA3[xd.getDay()]}</small><b>${xd.getDate()}</b><div class="wk7i">${doenteEm(x) ? '<span title="Doente">🤒</span>' : `${n == null ? '' : `<i class="dn ${n>=80?'g':n>=50?'a':'r'}"></i>`}${lv ? '<span>⭐</span>'.repeat(Math.min(lv,2)) : ''}`}</div></div>`; }).join('')}</div>
       <div style="font-size:13px;line-height:1.6;margin-top:14px">${ajuste}</div>
     </div>`
     : dietaPlanoHTML()}
   </div>`;
   $$('[data-ab]').forEach(b => b.onclick = () => { dietaAba = b.dataset.ab; render(); });
+  $('#dzBtn').onclick = () => doenteModal(dietaAba === 'hoje' && dia !== hoje ? dia : null);
   if (dietaAba === 'plano') return dietaPlanoBind();
+  if ($('#dzDes')) $('#dzDes').onclick = () => { delete DOE()[dia]; save(); render(); toast('Dia desmarcado'); };
   $('#dPrev').onclick = () => { dietaDia = iso(addDays(parseISO(dia),-1)); render(); };
   $('#dNext').onclick = () => { if (dia < hoje) { dietaDia = iso(addDays(parseISO(dia),1)); render(); } };
   $$('[data-dia]').forEach(el => el.onclick = () => { if (el.dataset.dia <= hoje) { dietaDia = el.dataset.dia; render(); } });
@@ -2407,6 +2467,7 @@ function juntarApp(a, b){
   }
   a.alongamentos = byId(a.alongamentos, b.alongamentos);
   if (b.dieta) { a.dieta ||= b.dieta; a.dieta.dias ||= {}; Object.entries(b.dieta.dias || {}).forEach(([d, v]) => { const x = a.dieta.dias[d]; if (!x || (!Object.keys(x.ref||{}).length && x.prot == null && !x.livres)) a.dieta.dias[d] = v; }); }
+  if (b.doente) { a.doente ||= {}; Object.entries(b.doente).forEach(([d, v]) => { if (!a.doente[d]) a.doente[d] = v; }); }
   if (b.pomodoro) { a.pomodoro ||= b.pomodoro; a.pomodoro.tags = byId(a.pomodoro.tags, b.pomodoro.tags); a.pomodoro.sessoes = byId(a.pomodoro.sessoes, b.pomodoro.sessoes); if (!a.pomodoro.cfg.tag && b.pomodoro.cfg) a.pomodoro.cfg.tag = b.pomodoro.cfg.tag; }
   a.mig = Object.assign({}, b.mig || {}, a.mig || {});
   return a;
