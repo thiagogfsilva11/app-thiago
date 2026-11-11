@@ -801,6 +801,11 @@ function load(){
     if (c) { c.hora = '07:45'; c.kcal = 400; c.desc = '2 ovos + 1 pão francês (ou 1 fatia de pão de forma) com queijo + café'; }
     S.mig.cafe1111 = true;
   }
+  if (!S.mig.lanche1111) {   // compensa o café menor: lanche reforçado
+    const l = (S.dieta.refeicoes || []).find(r => r.id === 'lanche');
+    if (l) { l.kcal = 600; l.desc = 'Iogurte com fruta e aveia + 1 pão francês (ou 2 fatias de pão de forma) com queijo ou frango'; }
+    S.mig.lanche1111 = true;
+  }
   save();
 }
 // histórico trazido do Antídoto (tela de Pomodoro, 21/out/2026)
