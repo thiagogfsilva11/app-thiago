@@ -806,6 +806,11 @@ function load(){
     if (l) { l.kcal = 600; l.desc = 'Iogurte com fruta e aveia + 1 pão francês (ou 2 fatias de pão de forma) com queijo ou frango'; }
     S.mig.lanche1111 = true;
   }
+  if (!S.mig.posArroz) {   // o pós-treino é com farinha de arroz, não de aveia
+    const r = (S.dieta.refeicoes || []).find(x => x.id === 'pos');
+    if (r && r.desc) r.desc = r.desc.replace(/farinha de aveia/i, 'farinha de arroz');
+    S.mig.posArroz = true;
+  }
   save();
 }
 // histórico trazido do Antídoto (tela de Pomodoro, 21/out/2026)
@@ -1938,7 +1943,7 @@ function dietaSeed(){
     livresSemana:3,
     refeicoes:[
       {id:'cafe', nome:'Café da manhã', hora:'07:30', kcal:650, desc:'3–4 ovos + carne, frango ou bacon + 1–2 pães franceses + café'},
-      {id:'pos', nome:'Pós-treino', hora:'10:00', kcal:550, treino:true, desc:'Shake: 40 g de whey + 80 g de farinha de aveia + 1 banana'},
+      {id:'pos', nome:'Pós-treino', hora:'10:00', kcal:550, treino:true, desc:'Shake: 40 g de whey + 80 g de farinha de arroz + 1 banana'},
       {id:'almoco', nome:'Almoço', hora:'13:00', kcal:850, desc:'Carne ou frango (1 palma e meia) + arroz (2 punhos) + feijão (1 concha) + legumes ou salada + farofa de ovos'},
       {id:'lanche', nome:'Lanche', hora:'16:30', kcal:350, desc:'Iogurte com fruta (pode juntar aveia ou granola)'},
       {id:'jantar', nome:'Jantar', hora:'20:00', kcal:700, desc:'Igual ao almoço, com um pouco menos de arroz. Hambúrguer caseiro ou de vez em quando entra no plano; de lanchonete com batata e refri, marque como livre ⭐'}
