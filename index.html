@@ -819,6 +819,11 @@ function load(){
     if (r && r.desc) r.desc = r.desc.replace(/farinha de aveia/i, 'farinha de arroz');
     S.mig.posArroz = true;
   }
+  if (!S.mig.cafeProteina) {   // café com frango, carne ou bacon (pedido em 11/11/2026)
+    const c = (S.dieta.refeicoes || []).find(r => r.id === 'cafe');
+    if (c && !/frango|carne|bacon/i.test(c.desc || '')) { c.desc = '2 ovos + frango, carne ou bacon + 1 pão francês (ou 1 fatia de pão de forma) com queijo + café'; c.kcal = 520; }
+    S.mig.cafeProteina = true;
+  }
   save();
 }
 // histórico trazido do Antídoto (tela de Pomodoro, 21/out/2026)
@@ -1950,7 +1955,7 @@ function dietaSeed(){
     metas:{kcal:3000, prot:170, carb:380, gord:80},
     livresSemana:3,
     refeicoes:[
-      {id:'cafe', nome:'Café da manhã', hora:'07:30', kcal:650, desc:'3–4 ovos + carne, frango ou bacon + 1–2 pães franceses + café'},
+      {id:'cafe', nome:'Café da manhã', hora:'07:45', kcal:520, desc:'2 ovos + frango, carne ou bacon + 1 pão francês (ou 1 fatia de pão de forma) com queijo + café'},
       {id:'pos', nome:'Pós-treino', hora:'10:00', kcal:550, treino:true, desc:'Shake: 40 g de whey + 80 g de farinha de arroz + 1 banana'},
       {id:'almoco', nome:'Almoço', hora:'13:00', kcal:850, desc:'Carne ou frango (1 palma e meia) + arroz (2 punhos) + feijão (1 concha) + legumes ou salada + farofa de ovos'},
       {id:'lanche', nome:'Lanche', hora:'16:30', kcal:350, desc:'Iogurte com fruta (pode juntar aveia ou granola)'},
