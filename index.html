@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#f6f6f4">
 <title>App Thiago</title>
-<meta name="app-versao" content="2026-11-12 16:58">
+<meta name="app-versao" content="2026-11-13 15:39">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -621,6 +621,15 @@ table.tb{width:100%;border-collapse:collapse;font-size:13.5px}
 .dmcal .mci i.dn{min-width:0;width:10px;height:10px;padding:0;border-radius:50%;display:block;margin-top:2px}
 .dmcal .mci i.dn.g{background:var(--green)} .dmcal .mci i.dn.a{background:var(--amber)} .dmcal .mci i.dn.r{background:var(--red)}
 
+/* duração editável do treino */
+.dur-in{display:flex;align-items:center;gap:6px;margin-top:6px}
+.dur-in input{flex:0 0 58px;width:58px;min-width:58px;font-size:18px;font-weight:700;padding:6px 4px;text-align:center}
+.dur-in span{font-size:12px;color:var(--muted)}
+.dur-edit{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:10px 12px;background:var(--soft);border-radius:11px}
+.dur-edit > span{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.dur-edit .dur-in{margin-top:0}
+.dur-edit small{font-size:12px}
+
 </style>
 </head>
 <body>
@@ -835,7 +844,10 @@ function pomoSeed(){
   if (SEMDADOS) return {cfg:{foco:30, pausa:5, rounds:1, som:'calmo', tag:''}, tags:[], sessoes:[], run:null};
   return {cfg:{foco:30, pausa:5, rounds:1, som:'calmo', tag:'tg2'}, tags, sessoes, run:null};
 }
-function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){ toast('Não consegui salvar: armazenamento do navegador indisponível'); } }
+function save(){
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){ toast('Não consegui salvar: armazenamento do navegador indisponível'); return; }
+  if (NUVEM && typeof nuvemSujo === 'function') nuvemSujo(KEY);
+}
 const lsGet = k => { try { return localStorage.getItem(k); } catch(e){ return null; } };
 function readEmbed(k){ try { return JSON.parse(localStorage.getItem(EMBED_KEYS[k])) || null; } catch(e){ return null; } }
 // leitura bíblica: lista dos dias do plano (lida do próprio conteúdo da página) e a próxima leitura
@@ -1557,6 +1569,8 @@ function treinoPainel(){
 }
 
 /* ---------- sessão ao vivo ---------- */
+// ao tocar num campo de número, seleciona o valor: digitar substitui em vez de juntar (no iPhone precisa do atraso)
+function selTudo(inp){ setTimeout(() => { try { inp.setSelectionRange(0, String(inp.value).length); } catch(e){ try { inp.select(); } catch(_){} } }, 30); }
 function treinoSessao(){
   const a = T().ativo, ro = T().rotinas[a.rotina];
   const html = a.itens.map((it, ii) => {
@@ -1599,7 +1613,8 @@ function treinoSessao(){
   const setOf = el => { const r = el.closest('.set-row2'); return a.itens[+r.dataset.i].sets[+r.dataset.s]; };
   $$('.set-in, .set-rir').forEach(inp => {
     const ev = inp.tagName === 'SELECT' ? 'change' : 'input';
-    inp.addEventListener(ev, () => { setOf(inp)[inp.dataset.f] = inp.value.trim(); save(); });
+    inp.addEventListener(ev, () => { setOf(inp)[inp.dataset.f] = inp.value.trim(); clearTimeout(VIEWS._trSave); VIEWS._trSave = setTimeout(save, 350); });
+    if (inp.tagName === 'INPUT') { inp.addEventListener('focus', () => selTudo(inp)); inp.addEventListener('blur', () => { clearTimeout(VIEWS._trSave); save(); }); }
   });
   // ao mudar a carga da 1ª série de trabalho, as seguintes ainda não feitas acompanham
   $$('.set-in[data-f="kg"]').forEach(inp => inp.addEventListener('change', () => {
@@ -1693,12 +1708,13 @@ function finalizarTreino(){
   const vol = Math.round(a.itens.reduce((q,it) => q + workSets(it).reduce((v,z) => v + (num(z.kg)||0) * num(z.reps), 0), 0));
   const min = Math.max(1, Math.round((Date.now() - new Date(a.inicio).getTime())/60000));
   openModal(`<h3>Finalizar ${esc(ro.nome)}</h3>
-    <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
-      <div class="card stat" style="box-shadow:none"><div class="k">Duração</div><div class="v" style="font-size:20px">${fmtMin(min)}</div></div>
+    <div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px">
+      <div class="card stat" style="box-shadow:none"><div class="k">Duração · min</div><div class="dur-in"><input id="fMin" type="text" inputmode="numeric" maxlength="3" value="${min > 150 ? '' : min}" placeholder="${min > 150 ? '60' : ''}"></div></div>
       <div class="card stat" style="box-shadow:none"><div class="k">Séries</div><div class="v" style="font-size:20px">${feitas}</div></div>
       <div class="card stat" style="box-shadow:none"><div class="k">Volume</div><div class="v" style="font-size:20px">${nf(vol)}<small>kg</small></div></div>
     </div>
     ${prs.length ? `<div class="pr-box">🏆 <b>${prs.length} recorde${prs.length>1?'s':''}!</b><br>${prs.map(p => `${esc(exInfo(p.ex).nome)}: ${p.kg ? kgTxt(p.kg)+' kg × ' : ''}${p.reps}`).join('<br>')}</div>` : ''}
+    ${min > 150 ? `<div class="tr-alert" style="margin:0 0 14px">O treino ficou aberto por <b>${fmtMin(min)}</b>. Parece que faltou finalizar na hora: coloque acima quanto tempo ele durou de verdade.</div>` : ''}
     ${pend ? `<p class="muted" style="font-size:12.5px;margin-bottom:12px">${pend} série${pend>1?'s':''} sem ✓ não ser${pend>1?'ão':'á'} salva${pend>1?'s':''}.</p>` : ''}
     ${difs.length ? `<div class="field"><label>Atualizar a rotina para as próximas vezes?</label>${difs.map((d,k) => `<label class="ck-line"><input type="checkbox" data-dif="${k}"> ${esc(exInfo(d.ex).nome)}: ${d.de} → <b>${d.para}</b> séries</label>`).join('')}</div>` : ''}
     ${perna ? `<div class="field"><label>Como ficou o joelho? <b id="jV" style="color:var(--ink)">0</b>/10</label><input type="range" id="jR" min="0" max="10" step="1" value="0"><div class="muted" id="jT" style="font-size:12px;margin-top:6px">Até 3, e passando até amanhã: tudo certo.</div></div>` : ''}
@@ -1707,10 +1723,14 @@ function finalizarTreino(){
     b.querySelector('[data-x]').onclick = closeModal;
     const jr = b.querySelector('#jR');
     if (jr) jr.oninput = () => { const v = +jr.value; b.querySelector('#jV').textContent = v; b.querySelector('#jT').innerHTML = v <= 3 ? 'Até 3, e passando até amanhã: tudo certo.' : v <= 5 ? '<span class="amber">Atenção: na próxima perna, reduza a carga ou troque o exercício que incomodou.</span>' : '<span class="red">Alto. Pegue leve nos próximos dias e, se continuar, procure seu fisioterapeuta.</span>'; };
+    const fMin = b.querySelector('#fMin');
+    if (min > 150) setTimeout(() => fMin.focus(), 80);
     b.querySelector('#fOk').onclick = () => {
+      const minReal = parseInt(fMin.value);
+      if (!(minReal >= 1 && minReal <= 300)) { fMin.focus(); return toast('Coloque a duração do treino em minutos'); }
       const itens = a.itens.map(it => ({ex:it.ex, nota:it.nota, sets:it.sets.filter(s => s.ok).map(s => ({t:s.t, kg:s.kg, reps:s.reps, rir:s.rir, ok:true}))})).filter(it => it.sets.length);
-      const fimD = new Date();
-      T().sessoes.push({id:a.id, rotina:a.rotina, inicio:a.inicio, fim:fimD.toISOString(), data:iso(new Date(a.inicio)), min, volume:vol, itens, prs, joelho: jr ? +jr.value : null, notas:b.querySelector('#fN').value.trim()});
+      const fimD = new Date(new Date(a.inicio).getTime() + minReal * 60000);
+      T().sessoes.push({id:a.id, rotina:a.rotina, inicio:a.inicio, fim:fimD.toISOString(), data:iso(new Date(a.inicio)), min:minReal, volume:vol, itens, prs, joelho: jr ? +jr.value : null, notas:b.querySelector('#fN').value.trim()});
       let mudou = 0;
       b.querySelectorAll('[data-dif]:checked').forEach(c => { const d = difs[+c.dataset.dif], pl = ro.itens.find(x => x.ex === d.ex); if (pl) { pl.series = d.para; mudou++; } });
       avancarSequencia(a.rotina);
@@ -1722,12 +1742,17 @@ function finalizarTreino(){
 }
 function sessaoModal(s){
   if (!s) return; const ro = T().rotinas[s.rotina];
-  openModal(`<h3>${esc(ro ? ro.nome : 'Treino')}</h3><p class="muted" style="margin:-10px 0 14px;font-size:13px">${fmtLong(s.data)} · ${fmtMin(s.min)} · ${nf(s.volume)} kg${s.joelho != null ? ' · joelho ' + s.joelho + '/10' : ''}</p>
+  openModal(`<h3>${esc(ro ? ro.nome : 'Treino')}</h3><p class="muted" style="margin:-10px 0 10px;font-size:13px">${fmtLong(s.data)} · <span id="sMinTxt">${fmtMin(s.min)}</span> · ${nf(s.volume)} kg${s.joelho != null ? ' · joelho ' + s.joelho + '/10' : ''}</p>
+    <div class="dur-edit"><span>Duração</span><div class="dur-in"><input id="sMin" type="text" inputmode="numeric" maxlength="3" value="${s.min}"><span>min</span></div>${s.min > 150 ? '<small class="amber">ficou aberto demais? corrija aqui</small>' : ''}</div>
     ${s.prs && s.prs.length ? `<div class="pr-box">🏆 ${s.prs.map(p => `${esc(exInfo(p.ex).nome)}: ${p.kg ? kgTxt(p.kg)+' kg × ' : ''}${p.reps}`).join(' · ')}</div>` : ''}
     <div class="sess-b">${s.itens.map(it => `<div class="ln"><span>${esc(exInfo(it.ex).nome)}</span><span class="muted">${it.sets.map(z => (z.t==='w'?'A ':'') + (num(z.kg) ? kgTxt(num(z.kg)) + '×' : '') + z.reps).join(' · ')}</span></div>`).join('')}</div>
     ${s.notas ? `<p style="margin-top:12px;font-size:13px;color:var(--ink2)">${esc(s.notas)}</p>` : ''}
     <div class="foot"><button class="btn btn-danger" id="sDel">${svg('trash')} Apagar</button><span class="sp"></span><button class="btn btn-dark" data-x>Fechar</button></div>`, b => {
     b.querySelector('[data-x]').onclick = closeModal;
+    const sm = b.querySelector('#sMin');
+    sm.addEventListener('focus', () => selTudo(sm));
+    sm.onchange = () => { const v = parseInt(sm.value); if (!(v >= 1 && v <= 300)) { sm.value = s.min; return toast('Duração entre 1 e 300 minutos'); }
+      s.min = v; s.fim = new Date(new Date(s.inicio).getTime() + v * 60000).toISOString(); save(); b.querySelector('#sMinTxt').textContent = fmtMin(v); toast('Duração salva ✓'); render(); };
     b.querySelector('#sDel').onclick = () => confirmBox('Apagar este treino do histórico? A sequência não volta atrás.', 'Apagar', () => { T().sessoes = T().sessoes.filter(x => x !== s); save(); render(); toast('Treino apagado'); });
   });
 }
@@ -1802,7 +1827,7 @@ function ativModal(x){
 function pesoModal(){
   const ps = T().pesos.slice().sort((a,b) => b.data.localeCompare(a.data));
   openModal(`<h3>Registrar peso</h3>
-    <div class="row2"><div class="field"><label>Peso (kg)</label><input id="pK" inputmode="decimal" value="${ps[0] ? nf(ps[0].kg,1) : ''}" autofocus></div><div class="field"><label>Data</label><input type="date" id="pD" value="${todayISO()}" max="${todayISO()}"></div></div>
+    <div class="row2"><div class="field"><label>Peso (kg)</label><input id="pK" inputmode="decimal" value="" placeholder="${ps[0] ? 'último: ' + nf(ps[0].kg,1) : 'ex.: 85,7'}"></div><div class="field"><label>Data</label><input type="date" id="pD" value="${todayISO()}" max="${todayISO()}"></div></div>
     <p class="muted" style="font-size:12px;line-height:1.6;margin-bottom:6px">Pese-se sempre do mesmo jeito (mesma balança, com o mesmo tênis). O app olha a média da semana, então variações de um dia para o outro não importam.</p>
     ${ps.length ? `<div class="sec-label" style="margin-top:14px">Últimos registros</div><div class="sess-b">${ps.slice(0,8).map(p => `<div class="ln"><span>${fmtShort(p.data)}</span><span>${nf(p.kg,1)} kg <button class="icon-btn" data-pdel="${p.id}" style="width:22px;height:22px;display:inline-grid;vertical-align:middle;background:none">${svg('x')}</button></span></div>`).join('')}</div>` : ''}
     <div class="foot"><button class="btn btn-ghost" data-x>Cancelar</button><button class="btn btn-dark" id="pOk">Salvar</button></div>`, b => {
@@ -1810,6 +1835,7 @@ function pesoModal(){
     const ok = () => { const kg = num(b.querySelector('#pK').value); if (!(kg > 20 && kg < 300)) return toast('Peso inválido');
       const d = b.querySelector('#pD').value || todayISO(); T().pesos = T().pesos.filter(p => p.data !== d); T().pesos.push({id:uid('pe'), data:d, kg}); save(); closeModal(); render(); toast('Peso registrado ✓'); };
     b.querySelector('#pOk').onclick = ok; b.querySelector('#pK').onkeydown = e => { if (e.key === 'Enter') ok(); };
+    setTimeout(() => b.querySelector('#pK').focus(), 80);
     b.querySelectorAll('[data-pdel]').forEach(x => x.onclick = () => { T().pesos = T().pesos.filter(p => p.id !== x.dataset.pdel); save(); pesoModal(); render(); });
   });
 }
@@ -2568,10 +2594,12 @@ async function nuvemPush(){
   pushing = true; nvStatus('salvando');
   try {
     const rows = mudou.map(k => { const v = lsGet(k); m.sujo[k] ||= new Date().toISOString(); return {user_id:nuvemUser.id, chave:k, valor:v, atualizado:new Date().toISOString(), _h:hashStr(v)}; });
+    setSyncMeta(m);
     const { error } = await sb.from('estado').upsert(rows.map(({_h, ...r}) => r), {onConflict:'user_id,chave'});
     if (error) throw error;
-    rows.forEach(r => { m.ultimo[r.chave] = r._h; delete m.sujo[r.chave]; });
-    m.puxado = new Date().toISOString(); setSyncMeta(m); nvStatus('ok');
+    const m2 = syncMeta(); m2.ultimo ||= {}; m2.sujo ||= {};
+    rows.forEach(r => { m2.ultimo[r.chave] = r._h; if (hashStr(lsGet(r.chave) || '') === r._h) delete m2.sujo[r.chave]; });   // mudou durante o envio: continua pendente
+    m2.puxado = new Date().toISOString(); setSyncMeta(m2); nvStatus('ok');
   } catch(e){ nvStatus(navigator.onLine ? 'erro' : 'offline', e.message); }
   pushing = false;
 }
@@ -2588,9 +2616,13 @@ async function nuvemPull(primeira){
       if (!SYNC_KEYS().includes(r.chave)) return;
       const local = lsGet(r.chave);
       if (local === r.valor) { m.ultimo[r.chave] = hashStr(r.valor); return; }
-      const localMexido = local != null && hashStr(local) !== m.ultimo[r.chave];
-      // se este aparelho mudou algo ainda não enviado, vence o mais recente
-      if (localMexido && !primeira && m.sujo[r.chave] && new Date(m.sujo[r.chave]) > new Date(r.atualizado)) return;
+      const localMexido = local != null && m.ultimo[r.chave] != null && hashStr(local) !== m.ultimo[r.chave];
+      // este aparelho mudou algo que ainda não foi para a nuvem (ex.: o iPhone fechou o app antes de enviar):
+      // a mudança daqui fica, a não ser que a nuvem tenha algo feito DEPOIS dela em outro aparelho
+      if (localMexido) {
+        if (!m.sujo[r.chave]) m.sujo[r.chave] = new Date().toISOString();
+        if (new Date(m.sujo[r.chave]) >= new Date(r.atualizado)) return;
+      }
       try { localStorage.setItem(r.chave, r.valor); } catch(e){ return; }
       m.ultimo[r.chave] = hashStr(r.valor); delete m.sujo[r.chave];
       if (r.chave === KEY) mudouApp = true; else mudouEmbed = true;
@@ -2599,11 +2631,24 @@ async function nuvemPull(primeira){
     if (appIniciado && (mudouApp || mudouEmbed)) {
       if (mudouApp) { load(); applyTheme(); }
       Object.keys(embedCache || {}).forEach(k => delete embedCache[k]);
-      const editando = document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
-      if (!editando && $('#modal').classList.contains('hidden')) render();
+      redesenharQuandoPuder();
     }
     return mudouApp || mudouEmbed;
   } catch(e){ nvStatus(navigator.onLine ? 'erro' : 'offline', e.message); return false; }
+}
+// redesenha a tela depois de receber dados da nuvem, sem atrapalhar quem está digitando
+function redesenharQuandoPuder(){
+  const editando = () => document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+  const tenta = () => { if (editando() || !$('#modal').classList.contains('hidden')) return false; render(); return true; };
+  if (tenta()) return;
+  const h = () => setTimeout(() => { if (tenta()) { document.removeEventListener('focusout', h); document.removeEventListener('click', h); } }, 50);
+  document.addEventListener('focusout', h); document.addEventListener('click', h);
+}
+// chamado a cada save(): marca na hora que há mudança local e envia logo
+let pushT = null;
+function nuvemSujo(k){
+  const m = syncMeta(); m.sujo ||= {}; m.sujo[k] = new Date().toISOString(); setSyncMeta(m);
+  clearTimeout(pushT); pushT = setTimeout(nuvemPush, 1200);
 }
 function nuvemLoop(){
   // detecta mudanças (inclusive as feitas dentro de Finanças e Bíblia) e envia
@@ -2659,9 +2704,12 @@ async function entrar(user){
     setSyncMeta({user:user.id, ultimo:{}, sujo:{}});
     nvStatus('salvando');
     await Promise.race([nuvemPull(true), new Promise(r => setTimeout(r, 9000))]);
+  } else if (!appIniciado) {
+    // aparelho conhecido: antes de abrir, traz o que outro aparelho mudou (sem perder o que ficou sem enviar daqui)
+    await Promise.race([nuvemPull(true), new Promise(r => setTimeout(r, 4000))]);
   }
   if (!appIniciado) { appIniciado = true; iniciarApp(); nuvemLoop(); }
-  nuvemPull(false);
+  else nuvemPull(false);
 }
 async function nuvemIniciar(){
   try { sb = window.supabase.createClient(SUPA.url, SUPA.key, {auth:{persistSession:true, autoRefreshToken:true}}); }
