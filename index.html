@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#f6f6f4">
 <title>App Thiago</title>
-<meta name="app-versao" content="2026-11-16 17:03">
+<meta name="app-versao" content="2026-11-17 14:41">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -686,6 +686,143 @@ button,a,label,select,.clk,[data-go]{touch-action:manipulation}
 .cp-pri button{flex:1;padding:10px 4px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:600;color:var(--muted)}
 .cp-pri button.on{border-color:var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 10%,var(--card))}
 @media(max-width:860px){ .cp-seg{display:flex} .cp-seg button{flex:1;justify-content:center} }
+/* ===== AGENDA E TAREFAS ===== */
+.ag-page{max-width:1100px}
+.ag-abas{display:flex;width:max-content;margin-bottom:20px}
+.ag-abas button{padding:9px 18px}
+.ag-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.ag-tit{font-size:32px;font-weight:800;letter-spacing:-1.1px;line-height:1.1}
+.ag-tit span{color:var(--muted);font-weight:600}
+.ag-nav{display:flex;align-items:center;gap:6px}
+.ag-nav .icon-btn{background:var(--card);border:1px solid var(--line)}
+.ag-nav .icon-btn svg{width:17px;height:17px}
+.ag-nav .btn[disabled]{opacity:.45;cursor:default}
+.ag-views{display:flex;width:max-content;margin-bottom:14px}
+.ag-views button{padding:8px 16px}
+/* mês */
+.ag-mes{padding:0;overflow:hidden}
+.ag-mh{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--line)}
+.ag-mh small{text-align:center;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:9px 0}
+.ag-mw{position:relative;display:grid;grid-template-columns:repeat(7,1fr);min-height:calc(30px + var(--l)*19px + 18px);border-bottom:1px solid var(--line2)}
+.ag-mw:last-child{border-bottom:none}
+.ag-md{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;text-align:left;padding:6px 7px;border-right:1px solid var(--line2);background:none;cursor:pointer;min-width:0}
+.ag-md:nth-child(7){border-right:none}
+.ag-md b{display:inline-grid;place-items:center;min-width:24px;height:24px;border-radius:50%;font-size:12.5px;font-weight:600}
+.ag-md.fora b{color:var(--faint)}
+.ag-md.hoje b{background:var(--accent);color:var(--accent-ink);font-weight:800}
+.ag-md.sel{background:var(--soft)}
+.ag-md.sel b{box-shadow:0 0 0 2px var(--ink)}
+.ag-md.hoje.sel b{box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--accent)}
+.ag-md em{position:absolute;top:10px;right:8px;width:6px;height:6px;border-radius:50%;background:var(--blue)}
+.ag-bars{position:absolute;left:0;right:0;top:32px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-auto-rows:17px;row-gap:2px;pointer-events:none}
+.ag-bar{margin:0 3px;padding:0 6px;border-radius:5px;font-size:11px;font-weight:600;line-height:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:color-mix(in srgb,var(--c) 22%,var(--card));color:var(--ink);border-left:3px solid var(--c);cursor:pointer}
+.ag-bar.hr{background:transparent;border-left:none;padding-left:2px}
+.ag-bar.hr::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--c);margin-right:4px;vertical-align:1px}
+.ag-bar i{font-style:normal;opacity:.7;margin-right:3px}
+.ag-bar.c0{margin-left:0;border-top-left-radius:0;border-bottom-left-radius:0;border-left:none}
+.ag-bar.c1{margin-right:0;border-top-right-radius:0;border-bottom-right-radius:0}
+.ag-more{font-size:10.5px;font-weight:700;color:var(--muted);padding:0 7px;line-height:16px}
+.ag-dia-sel{margin-top:14px}
+.ag-ds-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.ag-ds-h b{font-size:15px}
+.ag-ds-h > div{display:flex;gap:6px}
+.ag-ds-h .btn svg{width:14px;height:14px}
+.ag-dl .ag-li{display:flex;align-items:flex-start;gap:10px;padding:9px 4px;border-bottom:1px solid var(--line2);cursor:pointer}
+.ag-dl .ag-li:last-child{border-bottom:none}
+.ag-li-h{width:86px;flex-shrink:0;font-size:12px;font-weight:600;color:var(--ink2);padding-top:1px;font-variant-numeric:tabular-nums}
+.ag-li > i{width:4px;align-self:stretch;border-radius:4px;background:var(--c);flex-shrink:0}
+.ag-li-t{min-width:0}
+.ag-li-t b{display:block;font-size:14px;font-weight:600}
+.ag-li-t small{display:block;font-size:12px;color:var(--muted);margin-top:1px}
+.ag-vz{font-size:13px;padding:4px 0}
+.ag-tl{margin-top:12px}
+.ag-tl .k{margin-bottom:8px}
+.ag-lista{padding:4px 14px}
+/* grade de horas (dia e semana) */
+.ag-grade{padding:0;overflow:hidden}
+.ag-gh{display:grid;border-bottom:1px solid var(--line)}
+.ag-gd{display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 0;background:none;cursor:pointer;min-width:0}
+.ag-gd small{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ag-gd b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;font-size:15px;font-weight:700}
+.ag-gd.hoje b{background:var(--accent);color:var(--accent-ink)}
+.ag-allday{display:grid;border-bottom:1px solid var(--line);padding:4px 0}
+.ag-allday .ag-bars{position:static;grid-auto-rows:20px;pointer-events:auto}
+.ag-allday .ag-bar{line-height:20px}
+.ag-gut{font-size:9.5px;color:var(--muted);text-align:right;padding:4px 6px 0 0;line-height:1.1}
+.ag-scroll{height:min(64vh,620px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ag-gb{display:grid;position:relative;background:repeating-linear-gradient(to bottom,var(--line2) 0,var(--line2) 1px,transparent 1px,transparent 44px)}
+.ag-horas{position:relative}
+.ag-horas span{position:absolute;right:6px;transform:translateY(-50%);font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+.ag-col{position:relative;border-left:1px solid var(--line2);cursor:pointer}
+.ag-col.hoje{background:color-mix(in srgb,var(--blue) 4%,transparent)}
+.ag-ev{position:absolute;border-radius:7px;padding:3px 6px;overflow:hidden;background:color-mix(in srgb,var(--c) 20%,var(--card));border-left:3px solid var(--c);cursor:pointer;z-index:1}
+.ag-ev b{display:block;font-size:11.5px;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis}
+.ag-ev small{display:block;font-size:10.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ag-ev.curto{padding-top:1px}
+.ag-ev.curto b{white-space:nowrap}
+.ag-ev.curto small{display:none}
+.ag-now{position:absolute;left:0;right:0;height:2px;background:var(--red);z-index:2;pointer-events:none}
+.ag-now::before{content:"";position:absolute;left:-4px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--red)}
+/* modal de evento */
+.ag-sw{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;margin:2px 0 14px;cursor:pointer;user-select:none}
+.ag-sw input{position:absolute;opacity:0;pointer-events:none}
+.ag-sw span{width:40px;height:24px;border-radius:20px;background:var(--line);position:relative;transition:.15s;flex-shrink:0}
+.ag-sw span::after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:.15s}
+.ag-sw input:checked + span{background:var(--accent)}
+.ag-sw input:checked + span::after{left:19px;background:var(--accent-ink)}
+.ag-quando{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ag-quando .field{margin-bottom:4px}
+.ag-dh{display:flex;flex-direction:column;gap:6px}
+.ag-dows{display:flex;gap:4px;margin-top:8px}
+.ag-dows button{flex:1;padding:8px 0;border-radius:9px;border:1px solid var(--line);background:var(--card);font-size:12px;font-weight:600;color:var(--muted)}
+.ag-dows button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.ag-ate{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px}
+.ag-ate input{flex:1}
+.ag-ate small{font-size:11px}
+.ag-tipos{display:flex;flex-wrap:wrap;gap:6px}
+.ag-tipos button{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:12.5px;font-weight:600;color:var(--ink2)}
+.ag-tipos button i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.ag-tipos button.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,var(--card));color:var(--ink)}
+.ag-escopo{display:grid;gap:8px;margin-top:12px}
+.t-hint{display:block;font-size:11.5px;margin-top:6px}
+.t-quick{display:flex;gap:6px;flex-wrap:wrap}
+.t-quick .chip{padding:6px 12px;font-size:12.5px}
+.t-pausa{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;margin-bottom:14px;flex-wrap:wrap}
+.t-pausa small{font-weight:500}
+.t-dia{margin-top:22px}
+.t-dia span{letter-spacing:0;text-transform:none;font-weight:500;margin-left:6px}
+.t-rep{color:var(--ink2)}
+.t-dica{font-size:13px;margin:14px 2px 10px}
+.t-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.t-chips::-webkit-scrollbar{display:none}
+.t-chips .chip{flex-shrink:0}
+.th-tag{font-size:11px;font-weight:600;color:var(--muted);white-space:nowrap}
+.th-tag.late{color:var(--red)}
+.ag-home .ag-li-h{width:74px}
+@media(max-width:860px){
+  .ag-abas,.ag-views{width:100%}
+  .ag-abas button,.ag-views button{flex:1;justify-content:center}
+  .ag-tit{font-size:24px;letter-spacing:-.6px}
+  .ag-nv{display:none}
+  .ag-nav .btn-dark{padding:9px 11px}
+  .ag-md{padding:4px 2px;align-items:center}
+  .ag-md b{min-width:22px;height:22px;font-size:12px}
+  .ag-md em{top:6px;right:3px;width:5px;height:5px}
+  .ag-bars{top:29px;grid-auto-rows:15px}
+  .ag-bar{font-size:9.5px;line-height:15px;padding:0 3px;margin:0 1px;border-left-width:2px;border-radius:4px}
+  .ag-bar.hr::before{display:none}
+  .ag-bar i{display:none}
+  .ag-mw{min-height:calc(30px + var(--l)*17px + 16px)}
+  .ag-more{font-size:9.5px;padding:0 3px;line-height:14px}
+  .ag-gd small{font-size:9.5px;letter-spacing:0}
+  .ag-gd b{width:26px;height:26px;font-size:13.5px}
+  .ag-grade:not(.um) .ag-ev{padding:2px 3px;border-left-width:2px;border-radius:5px}
+  .ag-grade:not(.um) .ag-ev b{font-size:10px;font-weight:600;word-break:break-word}
+  .ag-grade:not(.um) .ag-ev small{display:none}
+  .ag-allday .ag-bar{font-size:9.5px}
+  .ag-scroll{height:calc(100dvh - 330px - env(safe-area-inset-bottom,0px));min-height:300px}
+  .ag-li-h{width:72px;font-size:11.5px}
+}
 
 </style>
 </head>
@@ -852,6 +989,7 @@ function load(){
   S.habitos ||= []; S.logs ||= {}; S.tarefas ||= []; S.checkins ||= {};
   S.treino ||= treinoSeed(); S.alongamentos ||= []; S.dieta ||= dietaSeed(); S.dieta.dias ||= {};
   S.doente ||= {};
+  S.agenda ||= {eventos:[]}; S.agenda.eventos ||= [];
   S.compras ||= {itens:[]}; S.compras.itens ||= [];
   S.pomodoro ||= pomoSeed();
   S.pomodoro.cfg ||= {foco:30, pausa:5, rounds:1, som:'calmo', tag:''};
@@ -884,6 +1022,10 @@ function load(){
     const l = (S.dieta.refeicoes || []).find(r => r.id === 'lanche');
     if (l) { l.kcal = 600; l.desc = 'Iogurte com fruta e aveia + 1 pão francês (ou 2 fatias de pão de forma) com queijo ou frango'; }
     S.mig.lanche1111 = true;
+  }
+  if (!S.mig.inc5) {   // barra: sobe 2,5 kg de cada lado (5 no total) — a academia não tem anilha de 1,25
+    Object.values(S.treino.ex || {}).forEach(x => { if (x && +x.inc === 2.5) x.inc = 5; });
+    S.mig.inc5 = true;
   }
   if (!S.mig.posArroz) {   // o pós-treino é com farinha de arroz, não de aveia
     const r = (S.dieta.refeicoes || []).find(x => x.id === 'pos');
@@ -973,7 +1115,7 @@ function closeMenu(){ const m = $('#menuPop'); if (m) m.remove(); }
 const ROUTES = [
   {id:'inicio', t:'Início', ic:'home'},
   {id:'checkin', t:'Check-in', ic:'checkin'},
-  {id:'tarefas', t:'Tarefas', ic:'tasks'},
+  {id:'tarefas', t:'Agenda e tarefas', ic:'cal'},
   {id:'compras', t:'Desejos e compras', ic:'bag'},
   {id:'habitos', t:'Hábitos', ic:'habits'},
   {id:'pomodoro', t:'Pomodoro', ic:'pomodoro'},
@@ -987,7 +1129,7 @@ const ROUTES = [
 const VIEWS = {};
 let route = 'inicio';
 // partes do app que esta conta usa (sem lista = todas, como na conta do Thiago)
-const MODULOS = [['financas','Finanças'],['biblia','Bíblia e oração'],['habitos','Hábitos'],['tarefas','Tarefas'],['compras','Desejos e compras'],['checkin','Check-in'],['pomodoro','Pomodoro'],['treino','Treino'],['alongamento','Alongamento'],['dieta','Alimentação']];
+const MODULOS = [['financas','Finanças'],['biblia','Bíblia e oração'],['habitos','Hábitos'],['tarefas','Agenda e tarefas'],['compras','Desejos e compras'],['checkin','Check-in'],['pomodoro','Pomodoro'],['treino','Treino'],['alongamento','Alongamento'],['dieta','Alimentação']];
 const modOn = id => id === 'ajustes' || !S || !S.config || !Array.isArray(S.config.modulos) || S.config.modulos.includes(id);
 const rotasVisiveis = () => { const v = ROUTES.filter(r => r.sep || modOn(r.id)); return v.filter((r,i) => !r.sep || (i > 0 && i < v.length-1 && !v[i-1].sep)); };
 const homeRoute = () => modOn('inicio') ? 'inicio' : ((ROUTES.find(r => !r.sep && modOn(r.id)) || {id:'ajustes'}).id);
@@ -1114,8 +1256,9 @@ VIEWS.inicio = function(){
   const nh = S.habitos.length, dh = doneOnDay(t);
   const ci = S.checkins[t];
   const ciTxt = ci && ci.finalizado ? 'Feito' : (ci ? 'Em andamento' : 'Pendente');
-  const abertas = S.tarefas.filter(x => x.status !== 'done');
-  const concHoje = S.tarefas.filter(x => x.status === 'done' && x.concluido === t).length;
+  const abertas = tAbertas().sort(taskSort);
+  const tarHoje = abertas.filter(x => { const d = tDia(x); return d && d <= t; }).length;
+  const concHoje = S.tarefas.filter(x => (!x.rep && x.status === 'done' && x.concluido === t) || tFeitaHoje(x)).length;
   const trA = S.treino.ativo, trP = proxRotina(), trHoje = S.treino.sessoes.find(s => s.data === t);
   const bibR = bibResumo();
   const lvl = k => { if (!nh) return 0; const p = doneOnDay(k)/nh; return p === 0 ? 0 : p < .34 ? 1 : p < .6 ? 2 : p < .85 ? 3 : 4; };
@@ -1129,11 +1272,12 @@ VIEWS.inicio = function(){
     <div class="grid g4 hoje5">
       <div class="card stat clk" data-go="checkin"><div class="k">Check-in</div><div class="v ${ci&&ci.finalizado?'green':ci?'':'faint'}">${ciTxt}</div></div>
       <div class="card stat clk" data-go="habitos"><div class="k">Hábitos</div><div class="v">${dh}<small>de ${nh}</small></div></div>
-      <div class="card stat clk" data-go="tarefas"><div class="k">Tarefas abertas</div><div class="v">${abertas.length}<small>${concHoje?concHoje+' feitas hoje':'a fazer'}</small></div></div>
+      <div class="card stat clk" data-go="tarefas" data-ag="tarefas"><div class="k">Tarefas de hoje</div><div class="v">${tarHoje}<small>${concHoje?concHoje+' feitas':'a fazer'}</small></div></div>
       <div class="card stat clk" data-go="treino"><div class="k">${trA ? 'Treino em andamento' : trHoje ? 'Treino de hoje' : 'Próximo treino'}</div><div class="v" style="font-size:19px">${esc((trA ? S.treino.rotinas[trA.rotina] : trHoje ? S.treino.rotinas[trHoje.rotina] : trP).nome)}<small>${trA ? 'toque para voltar' : trHoje ? '✓ feito' : esc(horaTreino())}</small></div></div>
       <div class="card stat clk" data-go="dieta"><div class="k">Alimentação</div>${(() => { const n = notaDia(t); return doenteEm(t) ? '<div class="v" style="font-size:19px">🤒 Doente<small>descanse e hidrate-se</small></div>' : n == null ? '<div class="v faint">Registrar</div>' : `<div class="v ${n>=80?'green':n>=50?'amber':'red'}">${n}%<small>${isFDS(t)?'fim de semana':'no plano'}</small></div>`; })()}</div>
     </div>
 
+    ${agHojeHTML()}
     <div style="margin-top:14px">${rotinaHTML()}</div>
 
     <div class="grid g2" style="margin-top:14px">
@@ -1142,8 +1286,8 @@ VIEWS.inicio = function(){
         <div class="today-habits">${S.habitos.map(h => `<div class="th-row ${isDone(h.id,t)?'done':''}" data-h="${h.id}"><span class="ck ${isDone(h.id,t)?'on':''}">${CHECK}</span><span class="nm">${esc(h.titulo)}</span></div>`).join('') || '<div class="empty">Nenhum hábito ainda.</div>'}</div>
       </div>
       <div class="card pad">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><b style="font-size:15px">Próximas tarefas</b><button class="btn btn-ghost btn-sm" data-go="tarefas">Ver todas</button></div>
-        ${abertas.sort(taskSort).slice(0,6).map(x => `<div class="th-row" data-t="${x.id}"><span class="ck round">${CHECK}</span><span class="nm">${esc(x.titulo)}</span><span style="font-size:10.5px;font-weight:800;letter-spacing:.06em;color:${PRI[x.prioridade].c}">${PRI[x.prioridade].t}</span></div>`).join('') || '<div class="empty"><div class="big">🎉</div>Nada pendente.</div>'}
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><b style="font-size:15px">Próximas tarefas</b><button class="btn btn-ghost btn-sm" data-go="tarefas" data-ag="tarefas">Ver todas</button></div>
+        ${abertas.slice(0,6).map(x => { const d = tDia(x), tag = !d ? '' : d < t ? '<span class="th-tag late">atrasada</span>' : d === t ? (x.hora ? `<span class="th-tag">${x.hora}</span>` : '') : `<span class="th-tag">${d === agAdd(t,1) ? 'amanhã' : fmtShort(d)}</span>`; return `<div class="th-row" data-t="${x.id}"><span class="ck round">${CHECK}</span><span class="nm">${esc(x.titulo)}${x.rep ? ' <span class="th-tag">↻</span>' : ''}</span>${tag}<span style="font-size:10.5px;font-weight:800;letter-spacing:.06em;color:${(PRI[x.prioridade]||PRI.normal).c}">${(PRI[x.prioridade]||PRI.normal).t}</span></div>`; }).join('') || '<div class="empty"><div class="big">🎉</div>Nada pendente.</div>'}
       </div>
     </div>
 
@@ -1161,9 +1305,9 @@ VIEWS.inicio = function(){
       </div>
     </div>
   </div>`;
-  $$('[data-go]').forEach(el => el.onclick = () => navTo(el.dataset.go));
+  $$('[data-go]').forEach(el => el.onclick = () => { if (el.dataset.ag) agTab = el.dataset.ag; navTo(el.dataset.go); });
   $$('.th-row[data-h]').forEach(el => el.onclick = () => { toggleHabit(el.dataset.h, t); render(); });
-  $$('.th-row[data-t]').forEach(el => el.onclick = () => { const x = S.tarefas.find(z => z.id === el.dataset.t); setTaskStatus(x,'done'); toast('Tarefa concluída ✓'); render(); });
+  $$('.th-row[data-t]').forEach(el => el.onclick = () => { const x = S.tarefas.find(z => z.id === el.dataset.t); if (x) tConcluir(x); render(); });
 };
 
 /* =========================================================
@@ -1206,7 +1350,13 @@ VIEWS.checkin = function(){
 };
 
 /* =========================================================
-   VIEW: TAREFAS
+   VIEW: AGENDA E TAREFAS
+   Uma tela com duas abas: Agenda (eventos no calendário) e Tarefas (afazeres por dia).
+   S.agenda.eventos = [{id, titulo, ini, fim, diaTodo, hIni, hFim, tipo, local, nota,
+                        rep:{freq:'diario'|'semanal'|'mensal'|'anual', dias:[0-6], ate:'AAAA-MM-DD'}|null, exc:[datas tiradas da série]}]
+   S.tarefas = [{id, titulo, prioridade, min, status, prazo (dia), hora, notas, criado, concluido,
+                 rep:{freq:'diario'|'uteis'|'semanal'|'mensal', dias:[0-6]}, ini, ultimo, ultAnt, feitos:[], pausada}]
+   Tarefa repetida: aparece só no dia dela; feita → some e volta na próxima data; esquecida → aparece uma vez em Atrasadas.
    ========================================================= */
 const PRI = {
   urgente:{t:'URGENTE', c:'var(--red)', o:0},
@@ -1215,71 +1365,492 @@ const PRI = {
   normal:{t:'NORMAL', c:'var(--muted)', o:3}
 };
 const STAT = {todo:'A fazer', doing:'Em progresso', done:'Concluído'};
-let taskFilter = 'all';
+const AG_TIPOS = {
+  pessoal:{t:'Pessoal', c:'#3b6fb6'}, trabalho:{t:'Trabalho', c:'#c27a1e'}, igreja:{t:'Igreja', c:'#8b5cf6'},
+  familia:{t:'Família', c:'#d14d8a'}, saude:{t:'Saúde', c:'#2f8a5b'}, viagem:{t:'Viagem', c:'#0e9488'}, outro:{t:'Outro', c:'#878b94'}
+};
+let agTab = 'agenda', taskFilter = 'todo', agView = 'mes', agData = '', agSel = '', agListaDias = 60;
+const AG = () => S.agenda.eventos;
+const agAdd = (s, n) => iso(addDays(parseISO(s), n));
+const agDiff = (a, b) => { const [y1,m1,d1] = a.split('-').map(Number), [y2,m2,d2] = b.split('-').map(Number); return Math.round((Date.UTC(y2,m2-1,d2) - Date.UTC(y1,m1-1,d1)) / 864e5); };
+const agDow = s => parseISO(s).getDay();
+const agSeg = s => agAdd(s, -((agDow(s) + 6) % 7));      // segunda-feira da semana (a semana do app começa na segunda)
+const agMin = h => { if (!h) return 0; const [a,b] = h.split(':').map(Number); return a*60 + (b||0); };
+const agHH = m => pad2(Math.floor(m/60) % 24) + ':' + pad2(m % 60);
+const agCurto = s => { const d = parseISO(s); return cap(DIA3[d.getDay()]) + ', ' + d.getDate() + ' ' + MES3[d.getMonth()]; };
+const agCor = ev => (AG_TIPOS[ev.tipo] || AG_TIPOS.outro).c;
+const agBanda = o => o.ev.diaTodo || o.ini !== o.fim;     // dia inteiro ou vários dias: vai na faixa de cima, não na grade de horas
+const DOW_SEG = [1,2,3,4,5,6,0];
+
+/* ---------- repetição (eventos e tarefas) ---------- */
+function repBate(rep, ini, s){
+  if (!rep || s < ini || (rep.ate && s > rep.ate)) return false;
+  const dw = agDow(s);
+  if (rep.freq === 'diario') return true;
+  if (rep.freq === 'uteis') return dw >= 1 && dw <= 5;
+  if (rep.freq === 'semanal') return (rep.dias && rep.dias.length ? rep.dias : [agDow(ini)]).includes(dw);
+  if (rep.freq === 'mensal') {
+    const alvo = +ini.slice(8), d = +s.slice(8), ult = new Date(+s.slice(0,4), +s.slice(5,7), 0).getDate();
+    return d === alvo || (alvo > ult && d === ult);
+  }
+  if (rep.freq === 'anual') return s.slice(5) === ini.slice(5);
+  return false;
+}
+function repTexto(rep, ini){
+  if (!rep) return '';
+  if (rep.freq === 'diario') return 'todo dia';
+  if (rep.freq === 'uteis') return 'seg a sex';
+  if (rep.freq === 'semanal') {
+    const ds = (rep.dias && rep.dias.length ? rep.dias : [agDow(ini)]).slice().sort((a,b) => DOW_SEG.indexOf(a) - DOW_SEG.indexOf(b));
+    if (ds.length === 7) return 'todo dia';
+    if (ds.join() === '1,2,3,4,5') return 'seg a sex';
+    const n = ds.map(d => DIA3[d]);
+    return (ds.length === 1 && (ds[0] === 0 || ds[0] === 6) ? 'todo ' : 'toda ') + (n.length > 1 ? n.slice(0,-1).join(', ') + ' e ' + n[n.length-1] : n[0]);
+  }
+  if (rep.freq === 'mensal') return 'todo dia ' + (+ini.slice(8)) + ' do mês';
+  if (rep.freq === 'anual') return 'todo ano em ' + (+ini.slice(8)) + ' ' + MES3[+ini.slice(5,7)-1];
+  return '';
+}
+
+/* ---------- eventos: ocorrências num intervalo ---------- */
+function agOcorr(a, b){
+  const out = [];
+  for (const ev of AG()) {
+    const dur = Math.max(0, agDiff(ev.ini, ev.fim));
+    if (!ev.rep) { if (ev.ini <= b && ev.fim >= a) out.push({ev, ini:ev.ini, fim:ev.fim}); continue; }
+    let s = agAdd(a, -dur); if (s < ev.ini) s = ev.ini;
+    let g = 0;
+    while (s <= b && g++ < 1500) { if (repBate(ev.rep, ev.ini, s) && !(ev.exc||[]).includes(s)) out.push({ev, ini:s, fim:agAdd(s, dur)}); s = agAdd(s, 1); }
+  }
+  return out.sort(agOrdem);
+}
+function agOrdem(x, y){
+  if (x.ini !== y.ini) return x.ini < y.ini ? -1 : 1;
+  const bx = agBanda(x), by = agBanda(y);
+  if (bx !== by) return bx ? -1 : 1;
+  if (bx && x.fim !== y.fim) return x.fim > y.fim ? -1 : 1;
+  return agMin(x.ev.hIni) - agMin(y.ev.hIni) || (x.ev.titulo||'').localeCompare(y.ev.titulo||'');
+}
+function agHoraTxt(o, dia){
+  const ev = o.ev;
+  if (o.ini !== o.fim) {
+    if (dia && dia > o.ini && dia < o.fim) return 'o dia todo';
+    if (dia && dia === o.fim && dia !== o.ini) return ev.diaTodo ? 'último dia' : 'até ' + ev.hFim;
+    return ev.diaTodo ? 'até ' + agCurto(o.fim).toLowerCase() : ev.hIni + ' · até ' + agCurto(o.fim).toLowerCase();
+  }
+  return ev.diaTodo ? 'dia todo' : ev.hIni + (ev.hFim ? '–' + ev.hFim : '');
+}
+/* faixas (lanes) para barras de vários dias numa linha de n dias a partir de d0 */
+function agLanes(occs, d0, n){
+  const it = occs.map(o => ({o, c0: Math.max(0, agDiff(d0, o.ini)), c1: Math.min(n-1, agDiff(d0, o.fim))})).filter(x => x.c1 >= 0 && x.c0 <= n-1);
+  it.sort((x,y) => x.c0 - y.c0 || (y.c1 - y.c0) - (x.c1 - x.c0) || agOrdem(x.o, y.o));
+  const fins = [];
+  it.forEach(x => { let l = fins.findIndex(f => f < x.c0); if (l < 0) { l = fins.length; fins.push(-1); } fins[l] = x.c1; x.lane = l; });
+  return {it, n: fins.length};
+}
+function agBarra(x, d0, n, comHora){
+  const o = x.o, cor = agCor(o.ev), cont0 = o.ini < agAdd(d0, x.c0), cont1 = o.fim > agAdd(d0, x.c1);
+  const txt = (comHora && !agBanda(o) ? o.ev.hIni + ' ' : '') + o.ev.titulo;
+  return `<div class="ag-bar ${agBanda(o)?'':'hr'} ${cont0?'c0':''} ${cont1?'c1':''}" style="--c:${cor};grid-column:${x.c0+1}/${x.c1+2};grid-row:${x.lane+1}" data-ev="${o.ev.id}" data-oc="${o.ini}">${o.ev.rep?'<i>↻</i>':''}${esc(txt)}</div>`;
+}
+
+/* ---------- tarefas ---------- */
+const tIni = x => x.ini || x.prazo || x.criado || todayISO();
+function tPend(x){        // próxima data em aberto de uma tarefa repetida
+  let s = x.ultimo ? agAdd(x.ultimo, 1) : tIni(x); if (s < tIni(x)) s = tIni(x);
+  for (let g = 0; g < 400; g++) { if (repBate(x.rep, tIni(x), s)) return s; s = agAdd(s, 1); }
+  return '';
+}
+const tFeitaHoje = x => !!x.rep && x.ultimo === todayISO();
+function tDia(x){ if (!x.rep) return x.prazo || ''; return tFeitaHoje(x) ? todayISO() : tPend(x); }
+function tVisivel(x){       // aparece em "A fazer"?
+  const t = todayISO();
+  if (x.rep) return !x.pausada && (tFeitaHoje(x) || (tPend(x) && tPend(x) <= t));
+  return x.status !== 'done';
+}
+function tAbertas(){ return S.tarefas.filter(x => tVisivel(x) && !tFeitaHoje(x)); }
 function taskSort(a,b){
-  const so = {doing:0, todo:1, done:2};
-  if (so[a.status] !== so[b.status]) return so[a.status]-so[b.status];
-  if (a.status === 'done') return (b.concluido||'').localeCompare(a.concluido||'');
-  if (PRI[a.prioridade].o !== PRI[b.prioridade].o) return PRI[a.prioridade].o - PRI[b.prioridade].o;
-  if ((a.prazo||'9') !== (b.prazo||'9')) return (a.prazo||'9').localeCompare(b.prazo||'9');
+  const t = todayISO(), da = tDia(a) || '9999', db = tDia(b) || '9999';
+  const ka = da < t ? '0' : da, kb = db < t ? '0' : db;
+  if (ka !== kb) return ka < kb ? -1 : 1;
+  if (tFeitaHoje(a) !== tFeitaHoje(b)) return tFeitaHoje(a) ? 1 : -1;
+  if ((a.status === 'doing') !== (b.status === 'doing')) return a.status === 'doing' ? -1 : 1;
+  if (!!a.hora !== !!b.hora) return a.hora ? -1 : 1;
+  if (a.hora && b.hora && a.hora !== b.hora) return a.hora < b.hora ? -1 : 1;
+  if ((PRI[a.prioridade]||PRI.normal).o !== (PRI[b.prioridade]||PRI.normal).o) return (PRI[a.prioridade]||PRI.normal).o - (PRI[b.prioridade]||PRI.normal).o;
   return (a.criado||'').localeCompare(b.criado||'');
 }
 function setTaskStatus(x, st){ x.status = st; x.concluido = st === 'done' ? todayISO() : ''; save(); }
-VIEWS.tarefas = function(){
-  const cnt = s => S.tarefas.filter(x => x.status === s).length;
-  const all = S.tarefas.slice().sort(taskSort);
-  const list = taskFilter === 'all' ? all : all.filter(x => x.status === taskFilter);
-  const minAbertos = S.tarefas.filter(x => x.status !== 'done').reduce((s,x) => s + (+x.min||0), 0);
+function tConcluir(x){
   const t = todayISO();
-  $('#main').innerHTML = `<div class="page narrow">
-    <div class="ph"><div><h1>Tarefas</h1><div class="sub">${cnt('todo')} a fazer · ${cnt('doing')} em progresso · ${cnt('done')} concluídas${minAbertos ? ' · '+fmtMin(minAbertos)+' estimados' : ''}</div></div>
-      <button class="btn btn-dark" id="newTask">${svg('plus')} Nova tarefa</button></div>
-    <div class="task-add"><input id="quickTask" placeholder="Adicionar rápido: digite e aperte Enter"></div>
-    <div class="chips" style="margin-bottom:20px">
-      ${[['all','Tudo',S.tarefas.length],['todo','A fazer',cnt('todo')],['doing','Em progresso',cnt('doing')],['done','Concluído',cnt('done')]].map(([k,l,n]) => `<button class="chip ${taskFilter===k?'on':''}" data-f="${k}">${l} <span class="n">${n}</span></button>`).join('')}
-    </div>
-    <div id="taskList">${list.map(x => { const p = PRI[x.prioridade]||PRI.normal; const late = x.prazo && x.status !== 'done' && x.prazo < t; return `<div class="card task ${x.status}" data-id="${x.id}" style="--pc:${p.c}">
-      <button class="circ" data-circ title="${x.status==='done'?'Reabrir':'Concluir'}">${CHECK}</button>
-      <div class="tt"><b>${esc(x.titulo)}</b><div class="meta"><span class="pr">${p.t}</span>${x.min ? `<span>${svg('clock')}${fmtMin(x.min)}</span>` : ''}${x.prazo ? `<span style="${late?'color:var(--red);font-weight:600':''}">${svg('cal')}${late?'atrasada · ':''}${fmtShort(x.prazo)}</span>` : ''}${x.notas ? '<span>· com notas</span>' : ''}</div></div>
-      ${x.status === 'doing' ? '<span class="stbadge">EM PROGRESSO</span>' : ''}
-    </div>`; }).join('') || `<div class="empty"><div class="big">${taskFilter==='done'?'📭':'🎉'}</div>${taskFilter==='done'?'Nenhuma tarefa concluída ainda.':'Nada por aqui.'}</div>`}</div>
+  if (x.rep) {
+    if (x.ultimo === t) { x.ultimo = x.ultAnt || ''; x.feitos = (x.feitos||[]).filter(d => d !== t); save(); toast('Desmarcada'); return; }
+    x.ultAnt = x.ultimo || ''; x.ultimo = t; (x.feitos ||= []).push(t); if (x.feitos.length > 120) x.feitos = x.feitos.slice(-120);
+    save(); const p = tPend(x); toast('Feita ✓' + (p ? ' · volta ' + (p === agAdd(t,1) ? 'amanhã' : agCurto(p).toLowerCase()) : ''));
+    return;
+  }
+  setTaskStatus(x, x.status === 'done' ? 'todo' : 'done'); toast(x.status === 'done' ? 'Concluída ✓' : 'Reaberta');
+}
+function tarefaLinha(x, opt = {}){
+  const t = todayISO(), p = PRI[x.prioridade] || PRI.normal, d = tDia(x), feita = x.rep ? tFeitaHoje(x) : x.status === 'done';
+  const late = !feita && d && d < t;
+  const meta = [`<span class="pr">${p.t}</span>`];
+  if (x.hora) meta.push(`<span>${svg('clock')}${x.hora}</span>`);
+  if (x.rep) meta.push(`<span class="t-rep">↻ ${repTexto(x.rep, tIni(x))}${x.pausada ? ' · pausada' : ''}</span>`);
+  if (late) meta.push(`<span style="color:var(--red);font-weight:600">${x.rep ? 'desde ' : 'atrasada · '}${fmtShort(d)}</span>`);
+  else if (opt.comData && d) meta.push(`<span>${svg('cal')}${fmtShort(d)}</span>`);
+  if (x.min) meta.push(`<span>~${fmtMin(x.min)}</span>`);
+  if (x.notas) meta.push('<span>· com notas</span>');
+  if (opt.repInfo) { const pd = tPend(x); meta.push(`<span>próxima: ${!pd ? '—' : pd <= t ? 'hoje' : pd === agAdd(t,1) ? 'amanhã' : agCurto(pd).toLowerCase()}</span>`); if ((x.feitos||[]).length) meta.push(`<span>feita ${x.feitos.length}×</span>`); }
+  return `<div class="card task ${feita?'done':x.status==='doing'?'doing':''}" data-id="${x.id}" style="--pc:${p.c}">
+    <button class="circ" data-circ title="${feita?'Desmarcar':'Concluir'}">${CHECK}</button>
+    <div class="tt"><b>${esc(x.titulo)}</b><div class="meta">${meta.join('')}</div></div>
+    ${x.status === 'doing' && !feita ? '<span class="stbadge">EM PROGRESSO</span>' : ''}
   </div>`;
+}
+function tarefasDoDia(dia){      // para a agenda: tarefas daquele dia (sem ocupar horário)
+  const t = todayISO();
+  return S.tarefas.filter(x => {
+    if (x.rep) { if (x.pausada) return false; if (dia === t) return tVisivel(x); return dia > t && repBate(x.rep, tIni(x), dia); }
+    return x.prazo === dia || (dia === t && x.status !== 'done' && x.prazo && x.prazo < t);
+  }).sort(taskSort);
+}
+
+/* ---------- tela ---------- */
+VIEWS.tarefas = function(){
+  const t = todayISO();
+  if (!agData) agData = agSel = t;
+  const topo = `<div class="seg ag-abas"><button class="${agTab==='agenda'?'on':''}" data-agtab="agenda">${svg('cal')}Agenda</button><button class="${agTab==='tarefas'?'on':''}" data-agtab="tarefas">${svg('tasks')}Tarefas</button></div>`;
+  $('#main').innerHTML = `<div class="page ${agTab==='tarefas'?'narrow':'ag-page'}">${topo}<div id="agCorpo"></div></div>`;
+  $$('[data-agtab]').forEach(b => b.onclick = () => { agTab = b.dataset.agtab; render(); });
+  if (agTab === 'tarefas') tarefasCorpo(); else agendaCorpo();
+};
+
+function tarefasCorpo(){
+  const t = todayISO(), am = agAdd(t, 1);
+  const vis = S.tarefas.filter(tVisivel), abertas = tAbertas();
+  const doing = S.tarefas.filter(x => !x.rep && x.status === 'doing');
+  const feitas = S.tarefas.filter(x => !x.rep && x.status === 'done').sort((a,b) => (b.concluido||'').localeCompare(a.concluido||''));
+  const reps = S.tarefas.filter(x => x.rep).sort((a,b) => (!!a.pausada - !!b.pausada) || (tPend(a)||'9').localeCompare(tPend(b)||'9'));
+  const hoje = abertas.filter(x => { const d = tDia(x); return d && d <= t; }).length;
+  const minAb = abertas.reduce((s,x) => s + (+x.min||0), 0);
+  let lista = '';
+  if (taskFilter === 'todo') {
+    const grupos = {};
+    vis.slice().sort(taskSort).forEach(x => { const d = tDia(x), k = !d ? 'sem' : d < t ? 'atr' : d; (grupos[k] ||= []).push(x); });
+    const ordem = Object.keys(grupos).sort((a,b) => (a === 'atr' ? '0' : a === 'sem' ? 'z' : a).localeCompare(b === 'atr' ? '0' : b === 'sem' ? 'z' : b));
+    const rot = k => k === 'atr' ? '<span style="color:var(--red)">Atrasadas</span>' : k === 'sem' ? 'Sem data' : k === t ? `Hoje <span>${agCurto(t)}</span>` : k === am ? `Amanhã <span>${agCurto(am)}</span>` : agCurto(k);
+    lista = ordem.map(k => `<div class="sec-label t-dia">${rot(k)}</div>${grupos[k].map(x => tarefaLinha(x)).join('')}`).join('')
+      || `<div class="empty"><div class="big">🎉</div>Nada a fazer. Aproveite!</div>`;
+  } else if (taskFilter === 'doing') lista = doing.sort(taskSort).map(x => tarefaLinha(x, {comData:true})).join('') || '<div class="empty">Nenhuma tarefa em progresso.</div>';
+  else if (taskFilter === 'done') lista = feitas.map(x => tarefaLinha(x, {comData:true})).join('') || '<div class="empty"><div class="big">📭</div>Nenhuma tarefa concluída ainda.</div>';
+  else lista = (reps.length ? '<p class="muted t-dica">Tarefas que voltam sozinhas. Cada uma aparece em “A fazer” só no dia dela.</p>' : '') + (reps.map(x => tarefaLinha(x, {repInfo:true})).join('') || '<div class="empty"><div class="big">↻</div>Nenhuma tarefa repetida.<br>Crie uma tarefa e escolha “Repetir”.</div>');
+  $('#agCorpo').innerHTML = `
+    <div class="ph"><div><h1>Tarefas</h1><div class="sub">${hoje} para hoje · ${abertas.length} a fazer${minAb ? ' · ' + fmtMin(minAb) + ' estimados' : ''}</div></div>
+      <button class="btn btn-dark" id="newTask">${svg('plus')} Nova tarefa</button></div>
+    <div class="task-add"><input id="quickTask" placeholder="Tarefa para hoje (Enter adiciona)"></div>
+    <div class="chips t-chips" style="margin-bottom:6px">
+      ${[['todo','A fazer',abertas.length],['doing','Em progresso',doing.length],['done','Concluídas',feitas.length],['rep','Repetidas',reps.length]].map(([k,l,n]) => `<button class="chip ${taskFilter===k?'on':''}" data-f="${k}">${l} <span class="n">${n}</span></button>`).join('')}
+    </div>
+    <div id="taskList">${lista}</div>`;
   $$('.chip[data-f]').forEach(b => b.onclick = () => { taskFilter = b.dataset.f; render(); });
   $('#newTask').onclick = () => taskModal(null);
-  $('#quickTask').onkeydown = e => { if (e.key === 'Enter' && e.target.value.trim()) { S.tarefas.push({id:uid('t'), titulo:e.target.value.trim(), prioridade:'normal', min:0, status:'todo', prazo:'', notas:'', criado:todayISO(), concluido:''}); save(); toast('Tarefa adicionada ✓'); render(); setTimeout(()=>$('#quickTask').focus(),0); } };
-  $$('.task').forEach(el => el.onclick = e => {
-    const x = S.tarefas.find(z => z.id === el.dataset.id);
-    if (e.target.closest('[data-circ]')) { setTaskStatus(x, x.status === 'done' ? 'todo' : 'done'); toast(x.status === 'done' ? 'Concluída ✓' : 'Reaberta'); render(); return; }
+  $('#quickTask').onkeydown = e => { if (e.key === 'Enter' && e.target.value.trim()) { S.tarefas.push({id:uid('t'), titulo:e.target.value.trim(), prioridade:'normal', min:0, status:'todo', prazo:todayISO(), hora:'', notas:'', criado:todayISO(), concluido:''}); save(); toast('Tarefa adicionada para hoje ✓'); render(); setTimeout(() => $('#quickTask') && $('#quickTask').focus(), 0); } };
+  ligarTarefas($('#taskList'));
+}
+function ligarTarefas(raiz){
+  raiz.querySelectorAll('.task[data-id]').forEach(el => el.onclick = e => {
+    const x = S.tarefas.find(z => z.id === el.dataset.id); if (!x) return;
+    if (e.target.closest('[data-circ]')) { tConcluir(x); render(); return; }
     taskModal(x);
   });
-};
-function taskModal(x){
-  const novo = !x; x = x || {titulo:'', prioridade:'media', min:'', status:'todo', prazo:'', notas:''};
+}
+function taskModal(x, diaPadrao){
+  const novo = !x, t = todayISO();
+  x = x || {titulo:'', prioridade:'media', min:'', status:'todo', prazo: diaPadrao || t, hora:'', notas:''};
+  const rep = x.rep || null, dia = x.rep ? tIni(x) : (x.prazo || '');
+  const diasSel = rep && rep.freq === 'semanal' ? (rep.dias && rep.dias.length ? rep.dias : [agDow(dia)]) : [agDow(dia || t)];
   openModal(`<h3>${novo ? 'Nova tarefa' : 'Editar tarefa'}</h3>
     <div class="field"><label>Título</label><input id="mT" value="${esc(x.titulo)}" placeholder="O que precisa ser feito?" autofocus></div>
+    <div class="field"><label id="mDl">${rep ? 'Começa em' : 'Dia'}</label>
+      <div class="t-quick">${[['Hoje', t], ['Amanhã', agAdd(t,1)], ['Sem data', '']].map(([l,v]) => `<button type="button" class="chip" data-qd="${v}">${l}</button>`).join('')}</div>
+      <div class="row2" style="margin-top:8px"><input id="mD" type="date" value="${dia}"><input id="mH" type="time" value="${x.hora||''}" aria-label="Horário (opcional)"></div>
+      <small class="muted t-hint">Horário é opcional · a tarefa não ocupa espaço na agenda</small></div>
+    <div class="field"><label>Repetir</label><select id="mR">
+      ${[['','Não repete'],['diario','Todo dia'],['uteis','Segunda a sexta'],['semanal','Toda semana'],['mensal','Todo mês']].map(([k,l]) => `<option value="${k}" ${(rep?rep.freq:'')===k?'selected':''}>${l}</option>`).join('')}</select>
+      <div class="ag-dows" id="mRD" style="${rep && rep.freq==='semanal'?'':'display:none'}">${DOW_SEG.map(d => `<button type="button" class="${diasSel.includes(d)?'on':''}" data-dw="${d}">${DIA3[d]}</button>`).join('')}</div>
+      <small class="muted t-hint" id="mRtx"></small></div>
     <div class="row2">
       <div class="field"><label>Prioridade</label><select id="mP">${Object.keys(PRI).map(k => `<option value="${k}" ${x.prioridade===k?'selected':''}>${cap(PRI[k].t.toLowerCase())}</option>`).join('')}</select></div>
-      <div class="field"><label>Tempo estimado (min)</label><input id="mM" type="number" min="0" step="5" value="${x.min||''}" placeholder="Ex.: 30"></div>
+      <div class="field"><label>Tempo estimado (min)</label><input id="mM" type="number" inputmode="numeric" min="0" step="5" value="${x.min||''}" placeholder="Ex.: 30"></div>
     </div>
-    <div class="row2">
-      <div class="field"><label>Status</label><select id="mS">${Object.keys(STAT).map(k => `<option value="${k}" ${x.status===k?'selected':''}>${STAT[k]}</option>`).join('')}</select></div>
-      <div class="field"><label>Prazo (opcional)</label><input id="mD" type="date" value="${x.prazo||''}"></div>
-    </div>
+    <div class="field" id="mSw" style="${rep?'display:none':''}"><label>Status</label><select id="mS">${Object.keys(STAT).map(k => `<option value="${k}" ${x.status===k?'selected':''}>${STAT[k]}</option>`).join('')}</select></div>
+    ${!novo && x.rep ? `<label class="t-pausa"><input type="checkbox" id="mPa" ${x.pausada?'checked':''}> Pausar repetição <small class="muted">(some de “A fazer” até você reativar)</small></label>
+      ${(x.feitos||[]).length ? `<p class="muted" style="font-size:12px;margin:-4px 0 12px">Feita ${x.feitos.length}× · última em ${fmtShort(x.feitos[x.feitos.length-1])}</p>` : ''}` : ''}
     <div class="field"><label>Notas</label><textarea id="mN" rows="3" placeholder="Detalhes, links, passos...">${esc(x.notas||'')}</textarea></div>
     <div class="foot">${novo ? '' : `<button class="btn btn-danger" id="mDel">${svg('trash')} Excluir</button>`}<span class="sp"></span><button class="btn btn-ghost" data-x>Cancelar</button><button class="btn btn-dark" id="mOk">${novo ? 'Adicionar' : 'Salvar'}</button></div>`,
   b => {
-    b.querySelector('[data-x]').onclick = closeModal;
-    b.querySelector('#mT').onkeydown = e => { if (e.key === 'Enter') b.querySelector('#mOk').click(); };
-    b.querySelector('#mOk').onclick = () => {
-      const titulo = b.querySelector('#mT').value.trim(); if (!titulo) { b.querySelector('#mT').focus(); return; }
-      const st = b.querySelector('#mS').value;
-      const data = {titulo, prioridade:b.querySelector('#mP').value, min:+b.querySelector('#mM').value||0, prazo:b.querySelector('#mD').value, notas:b.querySelector('#mN').value.trim()};
+    const q = s => b.querySelector(s);
+    let dws = diasSel.slice(), dwsMao = !!(rep && rep.freq === 'semanal');
+    const segueData = () => { const v = q('#mD').value; if (v && !dwsMao) { dws = [agDow(v)]; b.querySelectorAll('[data-dw]').forEach(z => z.classList.toggle('on', dws.includes(+z.dataset.dw))); } };
+    const atualiza = () => {
+      const f = q('#mR').value;
+      q('#mRD').style.display = f === 'semanal' ? '' : 'none';
+      q('#mSw').style.display = f ? 'none' : '';
+      q('#mDl').textContent = f ? 'Começa em' : 'Dia';
+      const ini = q('#mD').value || t;
+      q('#mRtx').textContent = f ? '↻ ' + repTexto({freq:f, dias:dws}, ini) + ' · aparece só no dia, e não acumula se esquecer' : '';
+    };
+    b.querySelectorAll('[data-qd]').forEach(c => c.onclick = () => { q('#mD').value = c.dataset.qd; segueData(); atualiza(); });
+    b.querySelectorAll('[data-dw]').forEach(c => c.onclick = () => { dwsMao = true; const d = +c.dataset.dw; dws = dws.includes(d) ? dws.filter(z => z !== d) : dws.concat(d); if (!dws.length) dws = [d]; b.querySelectorAll('[data-dw]').forEach(z => z.classList.toggle('on', dws.includes(+z.dataset.dw))); atualiza(); });
+    q('#mR').onchange = atualiza; q('#mD').onchange = () => { segueData(); atualiza(); }; atualiza();
+    q('[data-x]').onclick = closeModal;
+    q('#mT').onkeydown = e => { if (e.key === 'Enter') q('#mOk').click(); };
+    q('#mOk').onclick = () => {
+      const titulo = q('#mT').value.trim(); if (!titulo) { q('#mT').focus(); return; }
+      const f = q('#mR').value, d = q('#mD').value;
+      const data = {titulo, prioridade:q('#mP').value, min:+q('#mM').value||0, hora:q('#mH').value, notas:q('#mN').value.trim()};
+      if (f) {
+        const novaRep = {freq:f}; if (f === 'semanal') novaRep.dias = dws.slice();
+        const ini = d || t;
+        if (!x.rep || x.ini !== ini) { x.ultimo = ''; x.ultAnt = ''; }
+        Object.assign(data, {rep:novaRep, ini, prazo:'', status:'todo', concluido:''});
+        const pa = q('#mPa'); data.pausada = pa ? pa.checked : false;
+        if (novo) { data.feitos = []; data.ultimo = ''; }
+      } else {
+        data.prazo = d;
+        if (x.rep) { delete x.rep; delete x.ini; delete x.ultimo; delete x.ultAnt; delete x.pausada; delete x.feitos; }
+      }
+      const st = f ? 'todo' : q('#mS').value;
       if (novo) S.tarefas.push(Object.assign({id:uid('t'), criado:todayISO(), status:st, concluido: st==='done'?todayISO():''}, data));
-      else { Object.assign(x, data); if (x.status !== st) setTaskStatus(x, st); }
+      else { Object.assign(x, data); if (!f && x.status !== st) setTaskStatus(x, st); }
       save(); closeModal(); toast(novo ? 'Tarefa adicionada ✓' : 'Tarefa salva ✓'); render();
     };
-    const d = b.querySelector('#mDel'); if (d) d.onclick = () => confirmBox(`Excluir a tarefa <b>${esc(x.titulo)}</b>?`, 'Excluir', () => { S.tarefas = S.tarefas.filter(z => z !== x); save(); toast('Tarefa excluída'); render(); });
+    const del = q('#mDel'); if (del) del.onclick = () => confirmBox(`Excluir a tarefa <b>${esc(x.titulo)}</b>?${x.rep ? ' Ela para de repetir.' : ''}`, 'Excluir', () => { S.tarefas = S.tarefas.filter(z => z !== x); save(); toast('Tarefa excluída'); render(); });
   });
+}
+
+/* ---------- agenda ---------- */
+function agRotulo(){
+  const d = parseISO(agData);
+  if (agView === 'mes') return cap(MES[d.getMonth()]) + ' <span>' + d.getFullYear() + '</span>';
+  if (agView === 'dia') return agCurto(agData) + (agData.slice(0,4) !== todayISO().slice(0,4) ? ' <span>' + d.getFullYear() + '</span>' : '');
+  if (agView === 'lista') return 'Próximos eventos';
+  const a = agSeg(agData), b = agAdd(a, 6), da = parseISO(a), db = parseISO(b);
+  return da.getMonth() === db.getMonth() ? `${da.getDate()} – ${db.getDate()} ${MES3[db.getMonth()]}` : `${da.getDate()} ${MES3[da.getMonth()]} – ${db.getDate()} ${MES3[db.getMonth()]}`;
+}
+function agMover(n){
+  if (agView === 'mes') { const d = parseISO(agData.slice(0,8) + '01'); d.setMonth(d.getMonth() + n); agData = iso(d); const t = todayISO(); agSel = agData.slice(0,7) === t.slice(0,7) ? t : agData; }
+  else if (agView === 'semana') { agData = agAdd(agData, 7*n); agSel = agData; }
+  else { agData = agAdd(agData, n); agSel = agData; }
+  render();
+}
+function agendaCorpo(){
+  const t = todayISO();
+  $('#agCorpo').innerHTML = `
+    <div class="ag-top">
+      <h1 class="ag-tit">${agRotulo()}</h1>
+      <div class="ag-nav">${agView === 'lista' ? '' : `<button class="icon-btn" data-agm="-1" aria-label="Anterior">${svg('left')}</button><button class="btn btn-ghost btn-sm" id="agHoje" ${agData===t&&agSel===t?'disabled':''}>Hoje</button><button class="icon-btn" data-agm="1" aria-label="Próximo">${svg('right')}</button>`}
+        <button class="btn btn-dark" id="agNovo">${svg('plus')}<span class="ag-nv"> Evento</span></button></div>
+    </div>
+    <div class="seg ag-views">${[['dia','Dia'],['semana','Semana'],['mes','Mês'],['lista','Lista']].map(([k,l]) => `<button class="${agView===k?'on':''}" data-agv="${k}">${l}</button>`).join('')}</div>
+    <div id="agVista">${agView === 'mes' ? agMesHTML() : agView === 'lista' ? agListaHTML() : agGradeHTML(agView === 'dia' ? [agData] : Array.from({length:7}, (_, i) => agAdd(agSeg(agData), i)))}</div>`;
+  $$('[data-agv]').forEach(b => b.onclick = () => { agView = b.dataset.agv; if (agView !== 'mes') agData = agSel || agData; render(); });
+  $$('[data-agm]').forEach(b => b.onclick = () => agMover(+b.dataset.agm));
+  const h = $('#agHoje'); if (h) h.onclick = () => { agData = agSel = t; render(); };
+  $('#agNovo').onclick = () => agEventoModal(null, null, {dia: agView === 'lista' ? t : (agSel || agData)});
+  ligarAgenda($('#agVista'));
+}
+function ligarAgenda(raiz){
+  raiz.querySelectorAll('[data-ev]').forEach(el => el.onclick = e => {
+    e.stopPropagation();
+    const ev = AG().find(z => z.id === el.dataset.ev); if (!ev) return;
+    const dur = agDiff(ev.ini, ev.fim);
+    agEventoModal(ev, ev.rep ? {ini: el.dataset.oc, fim: agAdd(el.dataset.oc, dur)} : null);
+  });
+  raiz.querySelectorAll('[data-dsel]').forEach(el => el.onclick = () => { agSel = el.dataset.dsel; render(); });
+  raiz.querySelectorAll('[data-dabre]').forEach(el => el.onclick = () => { agData = agSel = el.dataset.dabre; agView = 'dia'; render(); });
+  raiz.querySelectorAll('[data-novodia]').forEach(el => el.onclick = () => agEventoModal(null, null, {dia: el.dataset.novodia}));
+  raiz.querySelectorAll('[data-novatar]').forEach(el => el.onclick = () => taskModal(null, el.dataset.novatar));
+  raiz.querySelectorAll('.ag-col').forEach(col => col.onclick = e => {
+    if (e.target.closest('[data-ev]')) return;
+    const r = col.getBoundingClientRect(), min = Math.max(0, Math.min(23, Math.floor((e.clientY - r.top) / AG_H))) * 60;
+    agEventoModal(null, null, {dia: col.dataset.dia, hIni: agHH(min), hFim: agHH(Math.min(min + 60, 23*60 + 59))});
+  });
+  raiz.querySelectorAll('.ag-mais').forEach(el => el.onclick = () => { agListaDias += 60; render(); });
+  ligarTarefas(raiz);
+  const sc = raiz.querySelector('.ag-scroll'); if (sc) sc.scrollTop = +sc.dataset.top || 0;
+}
+
+/* lista de um dia (abaixo do mês e na visão de dia) */
+function agDiaItens(dia){
+  const occs = agOcorr(dia, dia), ts = tarefasDoDia(dia);
+  return `<div class="ag-dl">${occs.map(o => `<div class="ag-li" data-ev="${o.ev.id}" data-oc="${o.ini}" style="--c:${agCor(o.ev)}">
+      <div class="ag-li-h">${esc(agHoraTxt(o, dia))}</div><i></i>
+      <div class="ag-li-t"><b>${esc(o.ev.titulo)}</b>${o.ev.local || o.ev.rep ? `<small>${o.ev.rep ? '↻ ' + repTexto(o.ev.rep, o.ev.ini) : ''}${o.ev.local && o.ev.rep ? ' · ' : ''}${esc(o.ev.local||'')}</small>` : ''}</div></div>`).join('')
+    || '<div class="muted ag-vz">Nenhum evento.</div>'}</div>
+    ${ts.length ? `<div class="ag-tl"><div class="k">Tarefas do dia</div>${ts.map(x => tarefaLinha(x)).join('')}</div>` : ''}`;
+}
+function agMesHTML(){
+  const t = todayISO(), mes = agData.slice(0,7), ini = agSeg(mes + '-01');
+  const ult = iso(new Date(+mes.slice(0,4), +mes.slice(5,7), 0)), fim = agAdd(agSeg(ult), 6);
+  const occs = agOcorr(ini, fim), MAXL = window.innerWidth < 640 ? 2 : 3;
+  if (!agSel || agSel.slice(0,7) !== mes) agSel = mes === t.slice(0,7) ? t : mes + '-01';
+  const temTar = {}; S.tarefas.forEach(x => { if (!x.rep && x.status !== 'done' && x.prazo) temTar[x.prazo] = 1; });
+  let sem = '';
+  for (let w = ini; w <= fim; w = agAdd(w, 7)) {
+    const {it} = agLanes(occs, w, 7);
+    const esc0 = Array(7).fill(0); it.filter(x => x.lane >= MAXL).forEach(x => { for (let c = x.c0; c <= x.c1; c++) esc0[c]++; });
+    let cel = '';
+    for (let i = 0; i < 7; i++) {
+      const d = agAdd(w, i);
+      cel += `<button class="ag-md ${d.slice(0,7)!==mes?'fora':''} ${d===t?'hoje':''} ${d===agSel?'sel':''}" data-dsel="${d}"><b>${+d.slice(8)}</b>${temTar[d]?'<em></em>':''}</button>`;
+    }
+    sem += `<div class="ag-mw" style="--l:${MAXL}">${cel}<div class="ag-bars">${it.filter(x => x.lane < MAXL).map(x => agBarra(x, w, 7, true)).join('')}${esc0.map((n,c) => n ? `<div class="ag-more" style="grid-column:${c+1};grid-row:${MAXL+1}">+${n}</div>` : '').join('')}</div></div>`;
+  }
+  return `<div class="card ag-mes"><div class="ag-mh">${DOW_SEG.map(d => `<small>${DIA3[d]}</small>`).join('')}</div>${sem}</div>
+    <div class="card pad ag-dia-sel">
+      <div class="ag-ds-h"><b>${fmtLong(agSel)}</b><div><button class="btn btn-ghost btn-sm" data-dabre="${agSel}">Abrir dia</button><button class="btn btn-ghost btn-sm" data-novodia="${agSel}">${svg('plus')}Evento</button></div></div>
+      ${agDiaItens(agSel)}
+    </div>`;
+}
+const AG_H = 44;   // altura de 1 hora na grade
+function agGradeHTML(dias){
+  const t = todayISO(), n = dias.length, a = dias[0], b = dias[n-1];
+  const occs = agOcorr(a, b), banda = occs.filter(agBanda), hor = occs.filter(o => !agBanda(o));
+  const {it, n: nl} = agLanes(banda, a, n);
+  const cols = `grid-template-columns:44px repeat(${n},minmax(0,1fr))`;
+  const cab = n > 1 ? `<div class="ag-gh" style="${cols}"><div></div>${dias.map(d => `<button class="ag-gd ${d===t?'hoje':''}" data-dabre="${d}"><small>${DIA3[agDow(d)]}</small><b>${+d.slice(8)}</b></button>`).join('')}</div>` : '';
+  const faixa = nl ? `<div class="ag-allday" style="${cols}"><div class="ag-gut">dia todo</div><div class="ag-bars" style="grid-column:2/${n+2};grid-template-columns:repeat(${n},minmax(0,1fr))">${it.map(x => agBarra(x, a, n, false)).join('')}</div></div>` : '';
+  let primeiro = 24*60;
+  const colunas = dias.map(d => {
+    const evs = hor.filter(o => o.ini === d).map(o => ({o, s: agMin(o.ev.hIni), e: Math.max(agMin(o.ev.hIni) + 25, o.ev.hFim ? agMin(o.ev.hFim) : agMin(o.ev.hIni) + 60)})).sort((x,y) => x.s - y.s || y.e - x.e);
+    // colunas lado a lado para eventos que se sobrepõem
+    let grupo = [], fimG = -1; const fecha = () => { const nc = Math.max(...grupo.map(g => g.col)) + 1; grupo.forEach(g => g.nc = nc); grupo = []; };
+    evs.forEach(x => { if (x.s >= fimG && grupo.length) fecha(); const usadas = grupo.filter(g => g.e > x.s).map(g => g.col); let c = 0; while (usadas.includes(c)) c++; x.col = c; grupo.push(x); fimG = Math.max(fimG, x.e); });
+    if (grupo.length) fecha();
+    evs.forEach(x => { primeiro = Math.min(primeiro, x.s); });
+    const agora = d === t ? (() => { const nw = new Date(); return `<div class="ag-now" style="top:${(nw.getHours()*60 + nw.getMinutes()) * AG_H / 60}px"></div>`; })() : '';
+    return `<div class="ag-col ${d===t?'hoje':''}" data-dia="${d}">${evs.map(x => `<div class="ag-ev ${x.e - x.s < 50 ? 'curto' : ''}" data-ev="${x.o.ev.id}" data-oc="${x.o.ini}" style="--c:${agCor(x.o.ev)};top:${x.s*AG_H/60}px;height:${(x.e-x.s)*AG_H/60 - 2}px;left:calc(${x.col/x.nc*100}% + 1px);width:calc(${100/x.nc}% - 3px)"><b>${x.o.ev.rep?'↻ ':''}${esc(x.o.ev.titulo)}</b><small>${x.o.ev.hIni}${x.o.ev.hFim ? '–' + x.o.ev.hFim : ''}${x.o.ev.local ? ' · ' + esc(x.o.ev.local) : ''}</small></div>`).join('')}${agora}</div>`;
+  }).join('');
+  const nw = new Date(), agoraMin = nw.getHours()*60 + nw.getMinutes();
+  const topo = Math.max(0, dias.includes(t) ? agoraMin - 90 : Math.min(7*60, primeiro - 30)) * AG_H / 60;   // hoje: perto da hora atual; outros dias: 7h (ou antes, se tiver evento cedo)
+  const tarefasDia = n === 1 ? `<div class="card pad ag-dia-sel" style="margin-bottom:12px"><div class="ag-ds-h"><b>${fmtLong(a)}</b><div><button class="btn btn-ghost btn-sm" data-novatar="${a}">${svg('plus')}Tarefa</button></div></div>${(() => { const ts = tarefasDoDia(a); return ts.length ? ts.map(x => tarefaLinha(x)).join('') : '<div class="muted ag-vz">Nenhuma tarefa neste dia.</div>'; })()}</div>` : '';
+  return `${tarefasDia}<div class="card ag-grade ${n===1?'um':''}">${cab}${faixa}
+    <div class="ag-scroll" data-top="${topo}"><div class="ag-gb" style="${cols};height:${24*AG_H}px">
+      <div class="ag-horas">${Array.from({length:24}, (_, h) => `<span style="top:${h*AG_H}px">${h ? pad2(h) + ':00' : ''}</span>`).join('')}</div>${colunas}
+    </div></div></div>`;
+}
+function agListaHTML(){
+  const t = todayISO(), fim = agAdd(t, agListaDias), occs = agOcorr(t, fim), grupos = {};
+  occs.forEach(o => { const d = o.ini < t ? t : o.ini; (grupos[d] ||= []).push(o); });
+  const dias = Object.keys(grupos).sort();
+  return (dias.map(d => `<div class="sec-label t-dia">${d === t ? 'Hoje <span>' + agCurto(d) + '</span>' : d === agAdd(t,1) ? 'Amanhã <span>' + agCurto(d) + '</span>' : agCurto(d) + (d.slice(0,4) !== t.slice(0,4) ? ' ' + d.slice(0,4) : '')}</div>
+      <div class="card ag-dl ag-lista">${grupos[d].map(o => `<div class="ag-li" data-ev="${o.ev.id}" data-oc="${o.ini}" style="--c:${agCor(o.ev)}">
+        <div class="ag-li-h">${esc(o.ini < d ? 'em andamento' : agHoraTxt(o, d))}</div><i></i>
+        <div class="ag-li-t"><b>${esc(o.ev.titulo)}</b>${o.ev.local || o.ev.rep ? `<small>${o.ev.rep ? '↻ ' + repTexto(o.ev.rep, o.ev.ini) : ''}${o.ev.local && o.ev.rep ? ' · ' : ''}${esc(o.ev.local||'')}</small>` : ''}</div></div>`).join('')}</div>`).join('')
+    || `<div class="empty"><div class="big">📅</div>Nenhum evento nos próximos ${agListaDias} dias.<br>Toque em “Evento” para marcar o primeiro.</div>`)
+    + `<div style="text-align:center;margin-top:14px"><button class="btn btn-ghost ag-mais">Mostrar mais ${60} dias</button></div>`;
+}
+
+/* modal de evento: ev = evento salvo (ou null), occ = ocorrência clicada (eventos que repetem), def = valores iniciais */
+function agEventoModal(ev, occ, def = {}){
+  const novo = !ev, t = todayISO();
+  const base = ev ? Object.assign({}, ev, occ ? {ini: occ.ini, fim: occ.fim} : {}) :
+    {titulo:'', ini: def.dia || t, fim: def.dia || t, diaTodo: !def.hIni, hIni: def.hIni || '09:00', hFim: def.hFim || '10:00', tipo:'pessoal', local:'', nota:'', rep:null};
+  const rep = base.rep, dws0 = rep && rep.freq === 'semanal' && rep.dias && rep.dias.length ? rep.dias : [agDow(base.ini)];
+  openModal(`<h3>${novo ? 'Novo evento' : 'Editar evento'}</h3>
+    <div class="field"><label>O que é</label><input id="eT" value="${esc(base.titulo)}" placeholder="Ex.: Reunião, Viagem para Recife, Culto" autofocus></div>
+    <label class="ag-sw"><input type="checkbox" id="eDT" ${base.diaTodo?'checked':''}><span></span>Dia inteiro</label>
+    <div class="ag-quando">
+      <div class="field"><label>Início</label><div class="ag-dh"><input id="eI" type="date" value="${base.ini}"><input id="eHI" type="time" value="${base.hIni||'09:00'}"></div></div>
+      <div class="field"><label>Fim</label><div class="ag-dh"><input id="eF" type="date" value="${base.fim}"><input id="eHF" type="time" value="${base.hFim||'10:00'}"></div></div>
+    </div>
+    <small class="muted t-hint" id="eDur"></small>
+    <div class="field" style="margin-top:12px"><label>Repetir</label><select id="eR">
+      ${[['','Não repete'],['diario','Todo dia'],['semanal','Toda semana'],['mensal','Todo mês'],['anual','Todo ano']].map(([k,l]) => `<option value="${k}" ${(rep?rep.freq:'')===k?'selected':''}>${l}</option>`).join('')}</select>
+      <div class="ag-dows" id="eRD" style="${rep && rep.freq==='semanal'?'':'display:none'}">${DOW_SEG.map(d => `<button type="button" class="${dws0.includes(d)?'on':''}" data-dw="${d}">${DIA3[d]}</button>`).join('')}</div>
+      <div class="ag-ate" id="eRA" style="${rep?'':'display:none'}"><span class="muted">Até</span><input id="eA" type="date" value="${rep && rep.ate || ''}"><small class="muted">vazio = sem fim</small></div></div>
+    <div class="field"><label>Tipo</label><div class="ag-tipos">${Object.entries(AG_TIPOS).map(([k,v]) => `<button type="button" class="${(base.tipo||'pessoal')===k?'on':''}" data-tp="${k}" style="--c:${v.c}"><i></i>${v.t}</button>`).join('')}</div></div>
+    <div class="field"><label>Local (opcional)</label><input id="eL" value="${esc(base.local||'')}" placeholder="Ex.: Escritório, Igreja, Fortaleza"></div>
+    <div class="field"><label>Nota (opcional)</label><textarea id="eN" rows="2" placeholder="Detalhes, o que levar…">${esc(base.nota||'')}</textarea></div>
+    <div class="foot">${novo ? '' : `<button class="btn btn-danger" id="eDel">${svg('trash')} Excluir</button>`}<span class="sp"></span><button class="btn btn-ghost" data-x>Cancelar</button><button class="btn btn-dark" id="eOk">${novo ? 'Adicionar' : 'Salvar'}</button></div>`,
+  b => {
+    const q = s => b.querySelector(s);
+    let tipo = base.tipo || 'pessoal', dws = dws0.slice(), dwsMao = !!(rep && rep.freq === 'semanal');
+    const atualiza = () => {
+      const dt = q('#eDT').checked;
+      b.querySelectorAll('#eHI,#eHF').forEach(i => i.style.display = dt ? 'none' : '');
+      const f = q('#eR').value;
+      q('#eRD').style.display = f === 'semanal' ? '' : 'none';
+      q('#eRA').style.display = f ? '' : 'none';
+      const ini = q('#eI').value, fim = q('#eF').value, dd = ini && fim ? agDiff(ini, fim) : 0;
+      q('#eDur').textContent = dd > 0 ? `Dura ${dd + 1} dias` + (f ? ' · ↻ ' + repTexto({freq:f, dias:dws}, ini) : '') : f ? '↻ ' + repTexto({freq:f, dias:dws}, ini) : '';
+    };
+    q('#eDT').onchange = atualiza; q('#eR').onchange = atualiza;
+    q('#eI').onchange = () => { const i = q('#eI').value, f = q('#eF').value, ant = base.ini; if (i && f && ant && f >= ant) q('#eF').value = agAdd(i, Math.max(0, agDiff(ant, f))); else if (i && (!f || f < i)) q('#eF').value = i; base.ini = i || base.ini;
+      if (i && !dwsMao) { dws = [agDow(i)]; b.querySelectorAll('[data-dw]').forEach(z => z.classList.toggle('on', dws.includes(+z.dataset.dw))); } atualiza(); };
+    q('#eF').onchange = atualiza;
+    q('#eHI').onchange = () => { const a = agMin(q('#eHI').value), z = agMin(q('#eHF').value); if (q('#eI').value === q('#eF').value && z <= a) q('#eHF').value = agHH(Math.min(a + 60, 23*60 + 59)); };
+    b.querySelectorAll('[data-dw]').forEach(c => c.onclick = () => { dwsMao = true; const d = +c.dataset.dw; dws = dws.includes(d) ? dws.filter(z => z !== d) : dws.concat(d); if (!dws.length) dws = [d]; b.querySelectorAll('[data-dw]').forEach(z => z.classList.toggle('on', dws.includes(+z.dataset.dw))); atualiza(); });
+    b.querySelectorAll('[data-tp]').forEach(c => c.onclick = () => { tipo = c.dataset.tp; b.querySelectorAll('[data-tp]').forEach(z => z.classList.toggle('on', z === c)); });
+    atualiza();
+    q('[data-x]').onclick = closeModal;
+    q('#eT').onkeydown = e => { if (e.key === 'Enter') q('#eOk').click(); };
+    q('#eOk').onclick = () => {
+      const titulo = q('#eT').value.trim(); if (!titulo) { q('#eT').focus(); return; }
+      const ini = q('#eI').value, fim = q('#eF').value || ini, diaTodo = q('#eDT').checked;
+      if (!ini) { q('#eI').focus(); return toast('Escolha o dia'); }
+      if (fim < ini) return toast('O fim está antes do início');
+      const hIni = diaTodo ? '' : q('#eHI').value || '09:00', hFim = diaTodo ? '' : q('#eHF').value;
+      if (!diaTodo && ini === fim && hFim && agMin(hFim) <= agMin(hIni)) return toast('O horário de fim está antes do início');
+      const f = q('#eR').value, ate = q('#eA').value;
+      if (f && ate && ate < ini) return toast('“Até” está antes do início');
+      const novaRep = f ? Object.assign({freq:f}, f === 'semanal' ? {dias:dws.slice()} : {}, ate ? {ate} : {}) : null;
+      const dados = {titulo, ini, fim, diaTodo, hIni, hFim, tipo, local:q('#eL').value.trim(), nota:q('#eN').value.trim()};
+      const fechar = msg => { save(); closeModal(); toast(msg); agSel = agSel || ini; render(); };
+      if (novo) { AG().push(Object.assign({id:uid('ev'), rep:novaRep, exc:[]}, dados)); agSel = ini; if (agView === 'mes') agData = ini; return fechar('Evento adicionado ✓'); }
+      if (!ev.rep || !occ) { Object.assign(ev, dados, {rep:novaRep}); if (!novaRep) ev.exc = []; return fechar('Evento salvo ✓'); }
+      // evento que repete: só este dia ou todos?
+      agEscopo('Salvar alteração', () => {
+        (ev.exc ||= []).push(occ.ini);
+        AG().push(Object.assign({id:uid('ev'), rep:null, exc:[]}, dados));
+        fechar('Alterado só neste dia ✓');
+      }, () => {
+        const desloc = agDiff(occ.ini, ini), dur = agDiff(ini, fim);
+        ev.ini = agAdd(ev.ini, desloc); ev.fim = agAdd(ev.ini, dur);
+        Object.assign(ev, {titulo, diaTodo, hIni, hFim, tipo, local:dados.local, nota:dados.nota, rep:novaRep});
+        if (!novaRep) ev.exc = [];
+        fechar('Alterado em todos os dias ✓');
+      });
+    };
+    const del = q('#eDel'); if (del) del.onclick = () => {
+      const tira = () => { S.agenda.eventos = AG().filter(z => z !== ev); save(); toast('Evento excluído'); render(); };
+      if (ev.rep && occ) agEscopo('Excluir evento', () => { (ev.exc ||= []).push(occ.ini); save(); closeModal(); toast('Excluído só neste dia'); render(); }, () => { closeModal(); tira(); }, true);
+      else confirmBox(`Excluir <b>${esc(ev.titulo)}</b>?`, 'Excluir', tira);
+    };
+  });
+}
+function agEscopo(titulo, soEste, todos, perigo){
+  openModal(`<h3>${titulo}</h3><p style="color:var(--ink2);line-height:1.6;margin-bottom:6px">Este evento se repete. Aplicar em quais dias?</p>
+    <div class="ag-escopo"><button class="pick" id="esUm"><b>Só neste dia</b><small>Os outros dias continuam como estavam</small></button>
+    <button class="pick" id="esTodos"><b>Em todos os dias</b><small>Muda a série inteira</small></button></div>
+    <div class="foot"><button class="btn btn-ghost" data-x>Cancelar</button></div>`, b => {
+      b.querySelector('[data-x]').onclick = closeModal;
+      b.querySelector('#esUm').onclick = soEste; b.querySelector('#esTodos').onclick = todos;
+      if (perigo) b.querySelectorAll('.pick b').forEach(x => x.style.color = 'var(--red)');
+    });
+}
+/* Início: card da agenda de hoje */
+function agHojeHTML(){
+  if (!modOn('tarefas')) return '';
+  const t = todayISO(), hoje = agOcorr(t, t), prox = hoje.length ? null : agOcorr(agAdd(t,1), agAdd(t,14))[0];
+  if (!hoje.length && !prox) return '';
+  return `<div class="card pad ag-home" style="margin-top:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b style="font-size:15px">Agenda de hoje</b><button class="btn btn-ghost btn-sm" data-go="tarefas" data-ag="agenda">Ver agenda</button></div>
+    ${hoje.length ? `<div class="ag-dl">${hoje.map(o => `<div class="ag-li" data-go="tarefas" data-ag="agenda" style="--c:${agCor(o.ev)}"><div class="ag-li-h">${esc(agHoraTxt(o, t))}</div><i></i><div class="ag-li-t"><b>${esc(o.ev.titulo)}</b>${o.ev.local ? `<small>${esc(o.ev.local)}</small>` : ''}</div></div>`).join('')}</div>`
+      : `<div class="muted" style="font-size:13px">Nada marcado hoje · próximo: <b style="color:var(--ink)">${esc(prox.ev.titulo)}</b> · ${prox.ini === agAdd(t,1) ? 'amanhã' : agCurto(prox.ini).toLowerCase()}${prox.ev.diaTodo || prox.ini !== prox.fim ? '' : ' às ' + prox.ev.hIni}</div>`}
+  </div>`;
 }
 
 /* =========================================================
@@ -1482,18 +2053,18 @@ const EX_LIB = {
   legpress:['Leg press 45°','Pernas','c',8,12,10], hack:['Agachamento na máquina / hack','Pernas','c',8,12,5],
   extensora:['Cadeira extensora','Pernas','i',12,15,0], flexora_sent:['Cadeira flexora (sentada)','Pernas','i',10,12,0],
   pant_pe:['Panturrilha em pé (máquina)','Pernas','i',10,15,0], elev_pernas:['Elevação de pernas na barra','Abdômen','pc',10,15,0],
-  supino_reto:['Supino reto (barra)','Peito','c',6,10,2.5], supino_incl_halt:['Supino inclinado (halteres)','Peito','c',8,12,2],
+  supino_reto:['Supino reto (barra)','Peito','c',6,10,5], supino_incl_halt:['Supino inclinado (halteres)','Peito','c',8,12,2],
   desenv_maq:['Desenvolvimento (máquina)','Ombros','c',8,12,0], elev_lat:['Elevação lateral (halteres)','Ombros','i',12,15,2],
   tri_corda:['Tríceps corda (polia)','Tríceps','i',10,15,0], tri_overhead:['Tríceps overhead (polia)','Tríceps','i',10,12,0],
-  barra_fixa:['Barra fixa','Costas','pc',6,12,0], remada_curv:['Remada curvada (barra)','Costas','c',6,10,2.5],
+  barra_fixa:['Barra fixa','Costas','pc',6,12,0], remada_curv:['Remada curvada (barra)','Costas','c',6,10,5],
   puxada_neutra:['Puxada no cabo (pegada neutra)','Costas','c',10,12,0], cruc_inv:['Crucifixo inverso (máquina)','Ombros','i',12,15,0],
-  rosca_direta:['Rosca direta (barra EZ)','Bíceps','i',8,12,2.5], rosca_martelo:['Rosca martelo (halteres)','Bíceps','i',10,12,2],
+  rosca_direta:['Rosca direta (barra EZ)','Bíceps','i',8,12,5], rosca_martelo:['Rosca martelo (halteres)','Bíceps','i',10,12,2],
   stiff:['Stiff (barra)','Pernas','c',8,10,5], elev_pelvica:['Elevação pélvica (barra)','Pernas','c',8,12,5],
   mesa_flexora:['Mesa flexora (deitada)','Pernas','i',10,12,0], legpress_alto:['Leg press (pés altos)','Pernas','c',10,12,10],
   abdutora:['Cadeira abdutora','Pernas','i',12,15,0], pant_sent:['Panturrilha sentado','Pernas','i',10,15,5],
   supino_incl:['Supino inclinado (máquina)','Peito','c',8,12,0], crucifixo:['Crucifixo (máquina)','Peito','i',12,15,0],
   paralelas:['Mergulho nas paralelas','Tríceps','pc',8,12,0], rosca_incl:['Rosca inclinada (halteres)','Bíceps','i',10,12,2],
-  tri_testa:['Tríceps testa (barra EZ)','Tríceps','i',10,12,2.5], rosca_cabo:['Rosca no cabo','Bíceps','i',12,15,0],
+  tri_testa:['Tríceps testa (barra EZ)','Tríceps','i',10,12,5], rosca_cabo:['Rosca no cabo','Bíceps','i',12,15,0],
   remada_maq:['Remada (máquina)','Costas','c',8,12,0], puxada_aberta:['Puxada aberta (pronada)','Costas','c',10,12,0],
   desenv_halt:['Desenvolvimento (halteres)','Ombros','c',8,10,2], elev_lat_cabo:['Elevação lateral no cabo','Ombros','i',12,15,0],
   encolhimento:['Encolhimento (halteres)','Trapézio','i',10,15,2], face_pull:['Face pull (polia)','Ombros','i',12,15,0],
@@ -2987,6 +3558,7 @@ function juntarApp(a, b){
     if (ultB > ultA) { ta.prox = tb.prox; ta.adiantados = tb.adiantados || []; ta.rotinas = tb.rotinas || ta.rotinas; }
   }
   a.alongamentos = byId(a.alongamentos, b.alongamentos);
+  if (b.agenda) { a.agenda ||= {eventos:[]}; a.agenda.eventos = byId(a.agenda.eventos, b.agenda.eventos); }
   if (b.compras) { a.compras ||= {itens:[]}; a.compras.itens = byId(a.compras.itens, b.compras.itens); }
   if (b.dieta) { a.dieta ||= b.dieta; a.dieta.dias ||= {}; Object.entries(b.dieta.dias || {}).forEach(([d, v]) => { const x = a.dieta.dias[d]; if (!x || (!Object.keys(x.ref||{}).length && x.prot == null && !x.livres)) a.dieta.dias[d] = v; }); }
   if (b.doente) { a.doente ||= {}; Object.entries(b.doente).forEach(([d, v]) => { if (!a.doente[d]) a.doente[d] = v; }); }
